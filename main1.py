@@ -1,6 +1,7 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from tkinter import messagebox
 from ttkthemes import ThemedTk
+from tkinter import ttk
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -22,6 +23,7 @@ style.configure('Desativado.TButton', foreground="red")
 
 HOTKEYS = ["Desligado", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"]
 HUR = ["Desligado", "Utani Hur", "Utani Gran Hur", "Utani Tempo Hur"]
+UTURA = ["Desligado", "Utura", "Utura gran"]
 
 def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwargs):
     my_widget = widget(**kwargs)
@@ -39,6 +41,10 @@ lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utilit
 lbl_food = generate_widget(Label, row=6, column=0, sticky="W", text="Eatfood", font=("Roboto", 12))
 cbx_food = generate_widget(Combobox, row=6, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 12), width= 12)
 cbx_food.current(0)
+
+lbl_utura = generate_widget(Label, row=8, column=0, sticky="W", text="Utura/Utura Gran (F7)", font=("Roboto", 12))
+cbx_utura = generate_widget(Combobox, row=8, column=1, values=UTURA, state="readonly", font=("Roboto", 12), width= 12)
+cbx_utura.current(0)
 
 lbl_hur = generate_widget(Label, row=7, column=0, sticky="W", text="Auto Hur (F4)", font=("Roboto", 12))
 cbx_hur = generate_widget(Combobox, row=7, column=1, values=HUR, state="readonly", font=("Roboto", 12), width= 12)
@@ -152,18 +158,38 @@ btn_skill1_position_trash.configure(command=clear_skill1)
 btn_skill2_position_trash = generate_widget(Button, row=4, column=5, image=trash, sticky="E")  # Botão de limpar para skill 2
 btn_skill2_position_trash.configure(command=clear_skill2)
 
-def opacity():
-    result = hidden_client()
-    if result == 1:
-        btn_opacity.configure(style='Ativado.TButton')
-        return
-    btn_opacity.configure(style='Desativado.TButton')
 
-btn_opacity = generate_widget(Button, row=9, column=0, text="Apply Opacity", columnspan=2, command=opacity)
-btn_opacity.configure(style='Desativado.TButton')  # Inicia a função como desativada
+def disable_opacity():
+    # Adicione aqui o código para desativar a opacidade
+    style.configure('Desativado.TButton', foreground='red')
+    btn_opacity.configure(text='Opacidade desativada', style='Desativado.TButton')
+
+def opacity():
+    try:
+        result = hidden_client()
+        style = ttk.Style()
+        if result == 1:
+            style.configure('Ativado.TButton', foreground='green')
+            btn_opacity.configure(text='Opacidade ativada', style='Ativado.TButton')
+        else:
+            disable_opacity()
+    except (IndexError, ValueError):
+        print("Janela do Tibia não localizada")
+
+style = ttk.Style()
+style.configure('Neutro.TButton', foreground='black')  # Cor neutra para o estado inicial
+btn_opacity = generate_widget(Button, row=0, column=9, text="Ativar opacidade", columnspan=2, command=opacity)
+btn_opacity.configure(style='Neutro.TButton')  # Inicia a função como neutra
+
+
+
+
 
 def cleanup():
-    btn_opacity.configure(style='Desativado.TButton')  # Desativa a função quando o programa é fechado
+    try:
+        btn_opacity.configure(style='Desativado.TButton')  # Desativa a função quando o programa é fechado
+    except (IndexError, ValueError):
+        print("Janela do Tibia não localizada")
 
 atexit.register(cleanup)
 
@@ -173,6 +199,7 @@ def load():
     cbx_food.current(data['food']['position'])
     cbx_cast.current(data['spell']['position'])
     cbx_hur.current(data['hur']['position'])
+    cbx_utura.current(data['utura']['position'])
     cbx_hp_heal.current(data['hp_heal']['position'])
     cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
     cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
@@ -191,6 +218,10 @@ def save():
         "hur":{
             "value": cbx_hur.get(),
             "position": cbx_hur.current()
+        },
+        "utura":{
+            "value": cbx_utura.get(),
+            "position": cbx_utura.current()
         },        
         "spell": {
             "value": cbx_cast.get(),
@@ -228,19 +259,50 @@ def save():
     with open('infos.json', 'w') as file:
         file.write(json.dumps(my_data))
 
+
+
+opacity_on = False
+
 def run():
-    
-    first_press = True
+    first_press_utura = True
+    first_press_hur = True
 
     wait_to_eat_food = 60
     time_food = time.time() - wait_to_eat_food
 
     while not myEvent.is_set():
-        try:
-            tibia = gw.getWindowsWithTitle('Tibia')[0]  # Substitua 'Tibia' pelo título da janela do seu jogo
-            tibia.activate()
-        except IndexError:
+        tibia_windows = gw.getWindowsWithTitle('Tibia')
+        if tibia_windows:
+            try:
+                tibia = tibia_windows[0]
+                tibia.activate()
+            except IndexError:
+                print("Erro ao ativar a janela do Tibia")
+                close_program()
+                break
+        else:
             print("Janela do Tibia não encontrada")
+            global opacity_on
+            if opacity_on:
+                opacity_on = False
+                opacity()
+            close_program()
+            break
+
+
+
+        if data['utura']['value'] != 'Desligado':
+            wait_to_cast_utura = 0
+        if data['utura']['value'] == 'Utura':
+            wait_to_cast_utura = 60.5
+        elif data['utura']['value'] == 'Utura Gran':
+            wait_to_cast_utura = 60.5
+
+        if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
+            time.sleep(1)  # Pause for 1 second before casting utura
+            pyautogui.press('F7')
+            time_utura = time.time()
+            first_press_utura = False
 
         if data['hur']['value'] != 'Desligado':
             wait_to_cast_hur = 0
@@ -251,10 +313,12 @@ def run():
         elif data['hur']['value'] == 'Utani Tempo Hur':
             wait_to_cast_hur = 4
 
-        if first_press or int(time.time() - time_hur) >= wait_to_cast_hur:
+        if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
+            time.sleep(1)  # Pause for 1 second before casting hur
             pyautogui.press('f4')
             time_hur = time.time()
-            first_press = False
+            first_press_hur = False
+
         if isinstance(data['mana_pos']['position'], list):
             x = data['mana_pos']['position'][0]
             y = data['mana_pos']['position'][1]
@@ -293,7 +357,7 @@ def run():
                 time_food = time.time()
 
 def key_code(key):
-    if key == pynput.keyboard.Key.esc:
+    if key == pynput.keyboard.Key.f12:
         myEvent.set()
         root.deiconify()
         return False
@@ -315,8 +379,31 @@ def start():
     keyboard_th = threading.Thread(target=listener_keyboard)
     keyboard_th.start()
 
-btn_start = generate_widget(Button, row=10, column=1, text="Start", command=start)
-btn_load = generate_widget(Button, row=10, column=0, text="Load", command=load)
+def close_program():
+    global opacity_on
+    tibia_windows = gw.getWindowsWithTitle('Tibia')
+    if tibia_windows:
+        if opacity_on:
+            opacity_on = False
+            disable_opacity()  # Desativa a opacidade
+    else:
+        try:
+            if opacity_on:
+                opacity_on = False
+                style.configure('Desativado.TButton', foreground='red')
+                btn_opacity.configure(text='Opacidade desativada', style='Desativado.TButton')  # Desativa a opacidade
+                disable_opacity()  # Desativa a opacidade
+        except ValueError:
+            print("Janela do Tibia não localizada")
+    root.destroy()
+    disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
+
+
+
+root.protocol("WM_DELETE_WINDOW", close_program)
+
+btn_start = generate_widget(Button, row=10, column=9, text="Start", command=start)
+btn_load = generate_widget(Button, row=10, column=8, text="Load", command=load)
 
 root.mainloop()
 
