@@ -1,7 +1,6 @@
 from tkinter.ttk import Label, Button, Combobox, Style
-from tkinter import messagebox
 from ttkthemes import ThemedTk
-from tkinter import ttk, Checkbutton, IntVar, Label
+from tkinter import ttk, Checkbutton, IntVar, Label, messagebox, Frame
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -11,6 +10,7 @@ import threading
 import pynput
 import time
 import atexit
+import win32gui
 import pygetwindow as gw
 
 root = ThemedTk(theme="msc", themebg=True)
@@ -20,6 +20,7 @@ style = Style()
 style.configure('TButton', font=("Roboto", 12))
 style.configure('Ativado.TButton', foreground="green")
 style.configure('Desativado.TButton', foreground="red")
+
 
 
 
@@ -377,15 +378,20 @@ def run():
 
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
+        hidden_client()
         myEvent.set()
+        disable_opacity()  # Desativa a opacidade antes de trazer a janela para o primeiro plano
         root.deiconify()
+        win32gui.SetForegroundWindow(root.winfo_id())
         return False
+
 
 def listener_keyboard():
     with pynput.keyboard.Listener(on_press=key_code) as Listener:
         Listener.join()
 
 def start():
+    opacity()
     root.iconify()
     save()
     global data
@@ -421,8 +427,9 @@ def close_program():
 
 root.protocol("WM_DELETE_WINDOW", close_program)
 
-btn_start = generate_widget(Button, row=10, column=9, text="Start", command=start)
-btn_load = generate_widget(Button, row=10, column=8, text="Load", command=load)
+btn_start = generate_widget(Button, row=11, column=9, text="Start", command=start, width=10)
+btn_load = generate_widget(Button, row=11, column=8, text="Load", command=load, width=10)
+
 
 root.mainloop()
 
