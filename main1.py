@@ -105,10 +105,13 @@ def get_mana_position():
     messagebox.showinfo(title="Mana Position", message="Position the mouse over the mana bar and press the insert key")
     keyboard.wait('insert')
     x, y = pyautogui.position()
-    rgb = pyautogui.screenshot().getpixel((x, y))
-    messagebox.showinfo(title='Mana Result', message=f"X: {x} Y: {y} - RGB: {rgb}")
-    lbl_mana_position.configure(text=f"({x}, {y})")
-    mana_position = [x, y]
+    new_rgb = pyautogui.screenshot().getpixel((x, y))
+    while new_rgb != rgb:
+        rgb = new_rgb
+        messagebox.showinfo(title='Mana Result', message=f"X: {x} Y: {y} - RGB: {rgb}")
+        lbl_mana_position.configure(text=f"({x}, {y})")
+        mana_position = [x, y]
+        new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=get_mana_position)
 lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -121,10 +124,13 @@ def get_hp_position():
     messagebox.showinfo(title="HP Position", message="Position the mouse over the HP bar and press the insert key")
     keyboard.wait('insert')
     x, y = pyautogui.position()
-    hp_rgb = pyautogui.screenshot().getpixel((x, y))
-    messagebox.showinfo(title='HP Result', message=f"X: {x} Y: {y} - RGB: {hp_rgb}")
-    lbl_hp_position.configure(text=f"({x}, {y})")
-    hp_position = [x, y]
+    new_rgb = pyautogui.screenshot().getpixel((x, y))
+    while new_rgb != hp_rgb:
+        hp_rgb = new_rgb
+        messagebox.showinfo(title='HP Result', message=f"X: {x} Y: {y} - RGB: {hp_rgb}")
+        lbl_hp_position.configure(text=f"({x}, {y})")
+        hp_position = [x, y]
+        new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=get_hp_position)
 lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -138,10 +144,13 @@ def get_skill1_position():
     messagebox.showinfo(title="Skill 1 Position", message="Position the mouse over the Skill 1 bar and press the insert key")
     keyboard.wait('insert')
     x, y = pyautogui.position()
-    skill1_rgb = pyautogui.screenshot().getpixel((x, y))
-    messagebox.showinfo(title='Skill 1 Result', message=f"X: {x} Y: {y} - RGB: {skill1_rgb}")
-    lbl_skill1_position.configure(text=f"({x}, {y})")
-    skill1_position = [x, y]
+    new_rgb = pyautogui.screenshot().getpixel((x, y))
+    while new_rgb != skill1_rgb:
+        skill1_rgb = new_rgb
+        messagebox.showinfo(title='Skill 1 Result', message=f"X: {x} Y: {y} - RGB: {skill1_rgb}")
+        lbl_skill1_position.configure(text=f"({x}, {y})")
+        skill1_position = [x, y]
+        new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Skill 1 Position", command=get_skill1_position)
 lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -154,10 +163,13 @@ def get_skill2_position():
     messagebox.showinfo(title="Skill 2 Position", message="Position the mouse over the Skill 2 bar and press the insert key")
     keyboard.wait('insert')
     x, y = pyautogui.position()
-    skill2_rgb = pyautogui.screenshot().getpixel((x, y))
-    messagebox.showinfo(title='Skill 2 Result', message=f"X: {x} Y: {y} - RGB: {skill2_rgb}")
-    lbl_skill2_position.configure(text=f"({x}, {y})")
-    skill2_position = [x, y]
+    new_rgb = pyautogui.screenshot().getpixel((x, y))
+    while new_rgb != skill2_rgb:
+        skill2_rgb = new_rgb
+        messagebox.showinfo(title='Skill 2 Result', message=f"X: {x} Y: {y} - RGB: {skill2_rgb}")
+        lbl_skill2_position.configure(text=f"({x}, {y})")
+        skill2_position = [x, y]
+        new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Skill 2 Position", command=get_skill2_position)
 lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -333,20 +345,20 @@ def run():
             close_program()
             break
 
-        if isinstance(data['mana_pos']['position'], list):
-            x = data['mana_pos']['position'][0]
-            y = data['mana_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x, y, tuple(data['mana_pos']['rgb'])):
-                if data['spell']['value'] != 'Desligado':
-                    pyautogui.press(data['spell']['value'])
-                    time.sleep(0.1) 
-
         if isinstance(data['hp_pos']['position'], list):  
             x_hp = data['hp_pos']['position'][0]
             y_hp = data['hp_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['hp_pos']['rgb'])):
+            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['hp_pos']['rgb'])):
                 if data['hp_heal']['value'] != 'Desligado':
                     pyautogui.press(data['hp_heal']['value'])
+                    time.sleep(0.1) 
+
+        if isinstance(data['mana_pos']['position'], list):
+            x = data['mana_pos']['position'][0]
+            y = data['mana_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x, y, tuple(data['mana_pos']['rgb'])):
+                if data['spell']['value'] != 'Desligado':
+                    pyautogui.press(data['spell']['value'])
                     time.sleep(0.1) 
 
 
@@ -375,7 +387,7 @@ def run():
         if isinstance(data['skill1_pos']['position'], list):
             x_skill1 = data['skill1_pos']['position'][0]
             y_skill1 = data['skill1_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
+            if not pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
                 if data['skill1']['value'] != 'Desligado':
                     pyautogui.press(data['skill1']['value'])
                     time.sleep(0.1) 
@@ -383,7 +395,7 @@ def run():
         if isinstance(data['skill2_pos']['position'], list):
             x_skill2 = data['skill2_pos']['position'][0]
             y_skill2 = data['skill2_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x_skill2, y_skill2, tuple(data['skill2_pos']['rgb'])):
+            if not pyautogui.pixelMatchesColor(x_skill2, y_skill2, tuple(data['skill2_pos']['rgb'])):
                 if data['skill2']['value'] != 'Desligado':
                     pyautogui.press(data['skill2']['value'])
                     time.sleep(0.1) 
