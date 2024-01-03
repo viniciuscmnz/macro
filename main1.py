@@ -1,6 +1,6 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from ttkthemes import ThemedTk
-from tkinter import ttk, Checkbutton, IntVar, Label, messagebox, Frame
+from tkinter import ttk, Checkbutton, IntVar, Label, messagebox
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -13,6 +13,7 @@ import atexit
 import win32gui
 import pygetwindow as gw
 
+
 root = ThemedTk(theme="msc", themebg=True)
 root.title("Macro")
 root.resizable(False, False)
@@ -22,13 +23,10 @@ style.configure('Ativado.TButton', foreground="green")
 style.configure('Desativado.TButton', foreground="red")
 
 
-
-
 HOTKEYS = ["Desligado", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"]
 HUR = ["Desligado", "Utani Hur", "Utani Gran Hur", "Utani Tempo Hur"]
 UTURA = ["Desligado", "Utura", "Utura gran"]
 var = IntVar
-
 
 def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwargs):
     my_widget = widget(**kwargs)
@@ -42,16 +40,32 @@ def load_trash():
 
 def load_ssa():
     load_image_ssa = Image.open('ssa-icon.gif')
-    resized_image = load_image_ssa.resize((40, 40))
+    resized_image = load_image_ssa.resize((30, 30))
     return ImageTk.PhotoImage(resized_image)
 
 def load_might_ring():
     load_image_might_ring = Image.open('might-ring-icon.gif')
-    resized_image = load_image_might_ring.resize((40, 40))
+    resized_image = load_image_might_ring.resize((30, 30))
     return ImageTk.PhotoImage(resized_image)
 
-lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 12))
-lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utility", font=("Roboto", 12))
+sep1 = ttk.Separator(root, orient='horizontal')
+sep1.grid(row=0, column=0, columnspan=8, sticky='ew')
+
+sep2 = ttk.Separator(root, orient='horizontal')
+sep2.grid(row=5, column=0, columnspan=8, sticky='ew')
+
+sep3 = ttk.Separator(root, orient='horizontal')
+sep3.grid(row=11, column=0, columnspan=8, sticky='ew')
+
+sep_vertical = ttk.Separator(root, orient='vertical')
+sep_vertical.grid(row=1, column=7, rowspan=10, sticky='ns')
+
+
+
+
+
+lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 13, 'bold'))
+lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utility", font=("Roboto", 13, 'bold'))
 
 lbl_food = generate_widget(Label, row=6, column=0, sticky="W", text="Eatfood", font=("Roboto", 12))
 cbx_food = generate_widget(Combobox, row=6, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 12), width= 12)
@@ -95,8 +109,8 @@ def get_mana_position():
     lbl_mana_position.configure(text=f"({x}, {y})")
     mana_position = [x, y]
 
-btn_mana_position = generate_widget(Button, row=2, column=3, text= "Mana Position", command=get_mana_position)
-lbl_mana_position = generate_widget(Label, row=2, column=4, text="Empty", font=("Roboto", 12), sticky="W")
+btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=get_mana_position)
+lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=("Roboto", 12), sticky="W")
 
 hp_rgb = ''
 hp_position = ''
@@ -111,8 +125,8 @@ def get_hp_position():
     lbl_hp_position.configure(text=f"({x}, {y})")
     hp_position = [x, y]
 
-btn_hp_position = generate_widget(Button, row=1, column=3, text= "HP Position", command=get_hp_position)
-lbl_hp_position = generate_widget(Label, row=1, column=4, text="Empty", font=("Roboto", 12), sticky="W")
+btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=get_hp_position)
+lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("Roboto", 12), sticky="W")
 
 # Adicionando as funções para obter a posição das skills
 skill1_rgb = ''
@@ -128,8 +142,8 @@ def get_skill1_position():
     lbl_skill1_position.configure(text=f"({x}, {y})")
     skill1_position = [x, y]
 
-btn_skill1_position = generate_widget(Button, row=3, column=3, text= "Skill 1 Position", command=get_skill1_position)
-lbl_skill1_position = generate_widget(Label, row=3, column=4, text="Empty", font=("Roboto", 12), sticky="W")
+btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Skill 1 Position", command=get_skill1_position)
+lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font=("Roboto", 12), sticky="W")
 
 skill2_rgb = ''
 skill2_position = ''
@@ -144,8 +158,8 @@ def get_skill2_position():
     lbl_skill2_position.configure(text=f"({x}, {y})")
     skill2_position = [x, y]
 
-btn_skill2_position = generate_widget(Button, row=4, column=3, text= "Skill 2 Position", command=get_skill2_position)
-lbl_skill2_position = generate_widget(Label, row=4, column=4, text="Empty", font=("Roboto", 12), sticky="W")
+btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Skill 2 Position", command=get_skill2_position)
+lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 12), sticky="W")
 
 trash = load_trash()
 ssa = load_ssa()
@@ -163,16 +177,16 @@ def clear_skill1():  # Função para limpar a posição da skill 1
 def clear_skill2():  # Função para limpar a posição da skill 2
     lbl_skill2_position.configure(text="Empty")
 
-btn_mana_position_trash = generate_widget(Button, row=2, column=5, image=trash, sticky="E")
+btn_mana_position_trash = generate_widget(Button, row=2, column=4, image=trash, sticky="E")
 btn_mana_position_trash.configure(command=clear_mana)
 
-btn_hp_position_trash = generate_widget(Button, row=1, column=5, image=trash, sticky="E")  # Botão de limpar para hp
+btn_hp_position_trash = generate_widget(Button, row=1, column=4, image=trash, sticky="E")  # Botão de limpar para hp
 btn_hp_position_trash.configure(command=clear_hp)
 
-btn_skill1_position_trash = generate_widget(Button, row=3, column=5, image=trash, sticky="E")  # Botão de limpar para skill 1
+btn_skill1_position_trash = generate_widget(Button, row=3, column=4, image=trash, sticky="E")  # Botão de limpar para skill 1
 btn_skill1_position_trash.configure(command=clear_skill1)
 
-btn_skill2_position_trash = generate_widget(Button, row=4, column=5, image=trash, sticky="E")  # Botão de limpar para skill 2
+btn_skill2_position_trash = generate_widget(Button, row=4, column=4, image=trash, sticky="E")  # Botão de limpar para skill 2
 btn_skill2_position_trash.configure(command=clear_skill2)
 
 lbl_ssa_position_image = generate_widget(Label, row=9, column=0, sticky="W", image=ssa, text="Auto SSA (insert)", compound='left', font=("Roboto", 12))
@@ -201,7 +215,7 @@ def opacity():
 
 style = ttk.Style()
 style.configure('Neutro.TButton', foreground='black')  # Cor neutra para o estado inicial
-btn_opacity = generate_widget(Button, row=0, column=9, text="Ativar opacidade", columnspan=2, command=opacity)
+btn_opacity = generate_widget(Button, row=12, column=1, text="Ativar opacidade", columnspan=1, command=opacity)
 btn_opacity.configure(style='Neutro.TButton')  # Inicia a função como neutra
 
 
@@ -378,7 +392,6 @@ def run():
 
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
-        hidden_client()
         myEvent.set()
         disable_opacity()  # Desativa a opacidade antes de trazer a janela para o primeiro plano
         root.deiconify()
@@ -391,7 +404,6 @@ def listener_keyboard():
         Listener.join()
 
 def start():
-    opacity()
     root.iconify()
     save()
     global data
@@ -427,10 +439,9 @@ def close_program():
 
 root.protocol("WM_DELETE_WINDOW", close_program)
 
-btn_start = generate_widget(Button, row=11, column=9, text="Start", command=start, width=10)
-btn_load = generate_widget(Button, row=11, column=8, text="Load", command=load, width=10)
+btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2, command=start, width=10)
+btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
 
 
 root.mainloop()
-
 
