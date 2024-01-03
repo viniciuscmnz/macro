@@ -27,6 +27,7 @@ HOTKEYS = ["Desligado", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F
 HUR = ["Desligado", "Utani Hur", "Utani Gran Hur", "Utani Tempo Hur"]
 UTURA = ["Desligado", "Utura", "Utura gran"]
 var = IntVar
+settings_changed = False
 
 def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwargs):
     my_widget = widget(**kwargs)
@@ -215,7 +216,7 @@ def opacity():
 
 style = ttk.Style()
 style.configure('Neutro.TButton', foreground='black')  # Cor neutra para o estado inicial
-btn_opacity = generate_widget(Button, row=12, column=1, text="Ativar opacidade", columnspan=1, command=opacity)
+btn_opacity = generate_widget(Button, row=12, column=0, text="Ativar opacidade", columnspan=1, command=opacity)
 btn_opacity.configure(style='Neutro.TButton')  # Inicia a função como neutra
 
 
@@ -230,23 +231,10 @@ def cleanup():
 
 atexit.register(cleanup)
 
-def load():
-    with open('infos.json', 'r') as file:
-        data = json.loads(file.read())
-    cbx_food.current(data['food']['position'])
-    cbx_cast.current(data['spell']['position'])
-    cbx_hur.current(data['hur']['position'])
-    cbx_utura.current(data['utura']['position'])
-    cbx_hp_heal.current(data['hp_heal']['position'])
-    cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
-    cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
-    lbl_mana_position.configure(text=data['mana_pos']['position'])
-    lbl_hp_position.configure(text=data['hp_pos']['position'])  # Carregando a posição do hp
-    lbl_skill1_position.configure(text=data['skill1_pos']['position'])
-    lbl_skill2_position.configure(text=data['skill2_pos']['position'])
-    return data
 
 def save():
+    global settings_changed
+    settings_changed = False
     my_data = {
         "food": {
             "value": cbx_food.get(),
@@ -296,7 +284,23 @@ def save():
     with open('infos.json', 'w') as file:
         file.write(json.dumps(my_data))
 
-
+def load():
+    global settings_changed
+    settings_changed = True
+    with open('infos.json', 'r') as file:
+        data = json.loads(file.read())
+    cbx_food.current(data['food']['position'])
+    cbx_cast.current(data['spell']['position'])
+    cbx_hur.current(data['hur']['position'])
+    cbx_utura.current(data['utura']['position'])
+    cbx_hp_heal.current(data['hp_heal']['position'])
+    cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
+    cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
+    lbl_mana_position.configure(text=data['mana_pos']['position'])
+    lbl_hp_position.configure(text=data['hp_pos']['position'])  # Carregando a posição do hp
+    lbl_skill1_position.configure(text=data['skill1_pos']['position'])
+    lbl_skill2_position.configure(text=data['skill2_pos']['position'])
+    return data
 
 opacity_on = False
 
@@ -329,6 +333,21 @@ def run():
             close_program()
             break
 
+        if isinstance(data['mana_pos']['position'], list):
+            x = data['mana_pos']['position'][0]
+            y = data['mana_pos']['position'][1]
+            if pyautogui.pixelMatchesColor(x, y, tuple(data['mana_pos']['rgb'])):
+                if data['spell']['value'] != 'Desligado':
+                    pyautogui.press(data['spell']['value'])
+                    time.sleep(0.1) 
+
+        if isinstance(data['hp_pos']['position'], list):  
+            x_hp = data['hp_pos']['position'][0]
+            y_hp = data['hp_pos']['position'][1]
+            if pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['hp_pos']['rgb'])):
+                if data['hp_heal']['value'] != 'Desligado':
+                    pyautogui.press(data['hp_heal']['value'])
+                    time.sleep(0.1) 
 
 
         if data['utura']['value'] != 'Desligado':
@@ -352,22 +371,6 @@ def run():
                 pyautogui.press('f4')
                 time_hur = time.time()
                 first_press_hur = False
-
-        if isinstance(data['mana_pos']['position'], list):
-            x = data['mana_pos']['position'][0]
-            y = data['mana_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x, y, tuple(data['mana_pos']['rgb'])):
-                if data['spell']['value'] != 'Desligado':
-                    pyautogui.press(data['spell']['value'])
-                    time.sleep(0.1) 
-
-        if isinstance(data['hp_pos']['position'], list):  
-            x_hp = data['hp_pos']['position'][0]
-            y_hp = data['hp_pos']['position'][1]
-            if pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['hp_pos']['rgb'])):
-                if data['hp_heal']['value'] != 'Desligado':
-                    pyautogui.press(data['hp_heal']['value'])
-                    time.sleep(0.1) 
 
         if isinstance(data['skill1_pos']['position'], list):
             x_skill1 = data['skill1_pos']['position'][0]
@@ -393,7 +396,6 @@ def run():
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
         myEvent.set()
-        disable_opacity()  # Desativa a opacidade antes de trazer a janela para o primeiro plano
         root.deiconify()
         win32gui.SetForegroundWindow(root.winfo_id())
         return False
@@ -405,8 +407,8 @@ def listener_keyboard():
 
 def start():
     root.iconify()
-    save()
     global data
+#    save()
     data = load()
     global myEvent
     myEvent = threading.Event()
@@ -440,7 +442,8 @@ def close_program():
 root.protocol("WM_DELETE_WINDOW", close_program)
 
 btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2, command=start, width=10)
-btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
+btn_load = generate_widget(Button, row=12, column=1, text="Load", command=load, width=10)
+btn_save = generate_widget(Button, row=12, column=2, text="Save", command=save, width=10)
 
 
 root.mainloop()
