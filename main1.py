@@ -1,7 +1,7 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from tkinter import messagebox
 from ttkthemes import ThemedTk
-from tkinter import ttk
+from tkinter import ttk, Checkbutton, IntVar, Label
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -21,9 +21,13 @@ style.configure('TButton', font=("Roboto", 12))
 style.configure('Ativado.TButton', foreground="green")
 style.configure('Desativado.TButton', foreground="red")
 
+
+
 HOTKEYS = ["Desligado", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"]
 HUR = ["Desligado", "Utani Hur", "Utani Gran Hur", "Utani Tempo Hur"]
 UTURA = ["Desligado", "Utura", "Utura gran"]
+var = IntVar
+
 
 def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwargs):
     my_widget = widget(**kwargs)
@@ -33,6 +37,16 @@ def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwar
 def load_trash():
     load_image = Image.open('trash-icon.jpg')
     resized_image = load_image.resize((20, 20))
+    return ImageTk.PhotoImage(resized_image)
+
+def load_ssa():
+    load_image_ssa = Image.open('ssa-icon.gif')
+    resized_image = load_image_ssa.resize((40, 40))
+    return ImageTk.PhotoImage(resized_image)
+
+def load_might_ring():
+    load_image_might_ring = Image.open('might-ring-icon.gif')
+    resized_image = load_image_might_ring.resize((40, 40))
     return ImageTk.PhotoImage(resized_image)
 
 lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 12))
@@ -133,6 +147,8 @@ btn_skill2_position = generate_widget(Button, row=4, column=3, text= "Skill 2 Po
 lbl_skill2_position = generate_widget(Label, row=4, column=4, text="Empty", font=("Roboto", 12), sticky="W")
 
 trash = load_trash()
+ssa = load_ssa()
+might_ring = load_might_ring()
 
 def clear_mana():
     lbl_mana_position.configure(text="Empty")
@@ -157,6 +173,12 @@ btn_skill1_position_trash.configure(command=clear_skill1)
 
 btn_skill2_position_trash = generate_widget(Button, row=4, column=5, image=trash, sticky="E")  # Botão de limpar para skill 2
 btn_skill2_position_trash.configure(command=clear_skill2)
+
+lbl_ssa_position_image = generate_widget(Label, row=9, column=0, sticky="W", image=ssa, text="Auto SSA (insert)", compound='left', font=("Roboto", 12))
+cbx_ssa = generate_widget(Checkbutton, row=9, column=1, variable=var)
+
+lbl_might_ring_position_image = generate_widget(Label, row=10, column=0, font=("Roboto", 12), text="Auto Might Ring (end)", compound='left', sticky="W", image=might_ring)
+cbx_might_ring = generate_widget(Checkbutton, row=10, column=1, variable=var)
 
 
 def disable_opacity():
@@ -270,6 +292,9 @@ def run():
     wait_to_eat_food = 60
     time_food = time.time() - wait_to_eat_food
 
+    time_utura = time.time()
+    time_hur = time.time()
+
     while not myEvent.is_set():
         tibia_windows = gw.getWindowsWithTitle('Tibia')
         if tibia_windows:
@@ -292,32 +317,26 @@ def run():
 
 
         if data['utura']['value'] != 'Desligado':
-            wait_to_cast_utura = 0
-        if data['utura']['value'] == 'Utura':
-            wait_to_cast_utura = 60.5
-        elif data['utura']['value'] == 'Utura Gran':
-            wait_to_cast_utura = 60.5
-
-        if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
-            time.sleep(1)  # Pause for 1 second before casting utura
-            pyautogui.press('F7')
-            time_utura = time.time()
-            first_press_utura = False
+            if data['utura']['value'] == 'Utura' or data['utura']['value'] == 'Utura Gran':
+                wait_to_cast_utura = 60.5
+            if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
+                time.sleep(1)  # Pause for 1 second before casting utura
+                pyautogui.press('F7')
+                time_utura = time.time()
+                first_press_utura = False
 
         if data['hur']['value'] != 'Desligado':
-            wait_to_cast_hur = 0
-        if data['hur']['value'] == 'Utani Hur':
-            wait_to_cast_hur = 31
-        elif data['hur']['value'] == 'Utani Gran Hur':
-            wait_to_cast_hur = 20
-        elif data['hur']['value'] == 'Utani Tempo Hur':
-            wait_to_cast_hur = 4
-
-        if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
-            time.sleep(1)  # Pause for 1 second before casting hur
-            pyautogui.press('f4')
-            time_hur = time.time()
-            first_press_hur = False
+            if data['hur']['value'] == 'Utani Hur':
+                wait_to_cast_hur = 29
+            elif data['hur']['value'] == 'Utani Gran Hur':
+                wait_to_cast_hur = 19
+            elif data['hur']['value'] == 'Utani Tempo Hur':
+                wait_to_cast_hur = 4
+            if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
+                time.sleep(1)  # Pause for 1 second before casting hur
+                pyautogui.press('f4')
+                time_hur = time.time()
+                first_press_hur = False
 
         if isinstance(data['mana_pos']['position'], list):
             x = data['mana_pos']['position'][0]
