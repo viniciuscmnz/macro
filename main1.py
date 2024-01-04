@@ -1,6 +1,6 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from ttkthemes import ThemedTk
-from tkinter import ttk, Checkbutton, IntVar, Label, messagebox
+from tkinter import ttk, Checkbutton, IntVar, Label, messagebox, filedialog
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -28,6 +28,8 @@ HUR = ["Desligado", "Utani Hur", "Utani Gran Hur", "Utani Tempo Hur"]
 UTURA = ["Desligado", "Utura", "Utura gran"]
 var = IntVar
 settings_changed = False
+loaded_filename = None
+settings_saved = False
 
 def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwargs):
     my_widget = widget(**kwargs)
@@ -245,8 +247,12 @@ atexit.register(cleanup)
 
 
 def save():
-    global settings_changed
+    global settings_changed, loaded_filename, settings_saved
     settings_changed = False
+    existing_data = {}
+    if loaded_filename:
+        with open(loaded_filename, 'r') as file:
+            existing_data = json.loads(file.read())
     my_data = {
         "food": {
             "value": cbx_food.get(),
@@ -276,10 +282,7 @@ def save():
             "value": cbx_skill2.get(),
             "position": cbx_skill2.current()
         },
-        "mana_pos": {
-            "position": mana_position,
-            "rgb": rgb
-        },
+        "mana_pos": existing_data.get('mana_pos', {"position": mana_position, "rgb": rgb}),
         "hp_pos": {  # Salvando a posição do hp
             "position": hp_position,
             "rgb": hp_rgb
@@ -293,26 +296,33 @@ def save():
             "rgb": skill2_rgb
         }
     }
-    with open('infos.json', 'w') as file:
-        file.write(json.dumps(my_data))
+    if loaded_filename is None:
+        loaded_filename = filedialog.asksaveasfilename(defaultextension=".json")
+    if loaded_filename:
+        with open(loaded_filename, 'w') as file:
+            file.write(json.dumps(my_data))
+    settings_saved = True
 
 def load():
-    global settings_changed
+    global settings_changed, loaded_filename, data
     settings_changed = True
-    with open('infos.json', 'r') as file:
-        data = json.loads(file.read())
-    cbx_food.current(data['food']['position'])
-    cbx_cast.current(data['spell']['position'])
-    cbx_hur.current(data['hur']['position'])
-    cbx_utura.current(data['utura']['position'])
-    cbx_hp_heal.current(data['hp_heal']['position'])
-    cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
-    cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
-    lbl_mana_position.configure(text=data['mana_pos']['position'])
-    lbl_hp_position.configure(text=data['hp_pos']['position'])  # Carregando a posição do hp
-    lbl_skill1_position.configure(text=data['skill1_pos']['position'])
-    lbl_skill2_position.configure(text=data['skill2_pos']['position'])
-    return data
+    filename = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
+    if filename:
+        loaded_filename = filename
+        with open(filename, 'r') as file:
+            data = json.loads(file.read())
+        cbx_food.current(data['food']['position'])
+        cbx_cast.current(data['spell']['position'])
+        cbx_hur.current(data['hur']['position'])
+        cbx_utura.current(data['utura']['position'])
+        cbx_hp_heal.current(data['hp_heal']['position'])
+        cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
+        cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
+        lbl_mana_position.configure(text=data['mana_pos']['position'])
+        lbl_hp_position.configure(text=data['hp_pos']['position'])  # Carregando a posição do hp
+        lbl_skill1_position.configure(text=data['skill1_pos']['position'])
+        lbl_skill2_position.configure(text=data['skill2_pos']['position'])
+        return data
 
 opacity_on = False
 
@@ -417,11 +427,22 @@ def listener_keyboard():
     with pynput.keyboard.Listener(on_press=key_code) as Listener:
         Listener.join()
 
+def on_change():
+    global settings_changed, settings_saved
+    settings_changed = True
+    settings_saved = False
+
 def start():
     root.iconify()
     global data
-    save()
-    data = load()
+    global settings_saved
+    # Verifique se as configurações foram salvas antes de iniciar o programa
+    if not settings_saved:
+        messagebox.showwarning("Aviso", "Por favor, salve as configurações antes de iniciar o programa.")
+        return
+    if loaded_filename:
+        with open(loaded_filename, 'r') as file:
+            data = json.loads(file.read())
     global myEvent
     myEvent = threading.Event()
     global start_th
@@ -455,6 +476,7 @@ root.protocol("WM_DELETE_WINDOW", close_program)
 
 btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2, command=start, width=10)
 btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
+btn_save = generate_widget(Button, row=12, column=1, text="Save", command=save, width=10)
 
 
 
