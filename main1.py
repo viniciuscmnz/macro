@@ -420,7 +420,7 @@ def listener_keyboard():
 def start():
     root.iconify()
     global data
-#    save()
+    save()
     data = load()
     global myEvent
     myEvent = threading.Event()
@@ -454,8 +454,8 @@ def close_program():
 root.protocol("WM_DELETE_WINDOW", close_program)
 
 btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2, command=start, width=10)
-btn_load = generate_widget(Button, row=12, column=1, text="Load", command=load, width=10)
-btn_save = generate_widget(Button, row=12, column=2, text="Save", command=save, width=10)
+btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
+
 
 
 root.mainloop()
