@@ -383,11 +383,15 @@ def save():
         "skill2_pos": existing_data.get('skill2_pos', {"position": skill2_position, "rgb": skill2_rgb})
     }
     if loaded_filename is None:
-        loaded_filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[('JSON files', '*.json')])
+        temp_filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[('JSON files', '*.json')])
+        if temp_filename:  # Se o usuário selecionou um arquivo
+            loaded_filename = temp_filename
     if loaded_filename:
         with open(loaded_filename, 'w') as file:
             file.write(json.dumps(my_data))
-    settings_saved = True
+        settings_saved = True
+    else:
+        settings_saved = False
 
 
 
@@ -418,6 +422,7 @@ def load():
         lbl_ssa_position.configure(text=data['ssa_pos']['position'])
         lbl_might_ring_position.configure(text=data['might_ring_pos']['position'])
         return data
+
 
 opacity_on = False
 
@@ -546,6 +551,7 @@ def on_change():
     settings_saved = False
 
 def start():
+    save()
     # Verifique a opacidade da janela antes de iniciar o programa
     if opacity_on == False:
         messagebox.showwarning("Warning", "Please save the settings before starting the bot.")
