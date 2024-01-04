@@ -17,7 +17,6 @@ def get_window_opacity(hwnd):
     else:
         return None
 
-
 def hidden_client():
     windows = pyautogui.getAllWindows()
     for window in windows:

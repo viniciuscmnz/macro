@@ -67,6 +67,7 @@ sep_vertical.grid(row=1, column=7, rowspan=10, sticky='ns')
 
 
 
+
 lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 13, 'bold'))
 lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utility", font=("Roboto", 13, 'bold'))
 
@@ -102,18 +103,22 @@ cbx_skill2.current(0)
 rgb = ''
 mana_position = ''
 def get_mana_position():
-    global rgb
-    global mana_position
-    messagebox.showinfo(title="Mana Position", message="Position the mouse over the mana bar and press the insert key")
-    keyboard.wait('insert')
-    x, y = pyautogui.position()
-    new_rgb = pyautogui.screenshot().getpixel((x, y))
-    while new_rgb != rgb:
-        rgb = new_rgb
-        messagebox.showinfo(title='Mana Result', message=f"X: {x} Y: {y} - RGB: {rgb}")
-        lbl_mana_position.configure(text=f"({x}, {y})")
-        mana_position = [x, y]
+    if opacity_on == False:
+        messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+        return
+    if opacity_on == True:
+        global rgb
+        global mana_position
+        messagebox.showinfo(title="Mana Position", message="Position the mouse over the mana bar and press the insert key")
+        keyboard.wait('insert')
+        x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
+        while new_rgb != rgb:
+            rgb = new_rgb
+            messagebox.showinfo(title='Mana Result', message=f"X: {x} Y: {y} - RGB: {rgb}")
+            lbl_mana_position.configure(text=f"({x}, {y})")
+            mana_position = [x, y]
+            new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=get_mana_position)
 lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -121,18 +126,22 @@ lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=(
 hp_rgb = ''
 hp_position = ''
 def get_hp_position():
-    global hp_rgb
-    global hp_position
-    messagebox.showinfo(title="HP Position", message="Position the mouse over the HP bar and press the insert key")
-    keyboard.wait('insert')
-    x, y = pyautogui.position()
-    new_rgb = pyautogui.screenshot().getpixel((x, y))
-    while new_rgb != hp_rgb:
-        hp_rgb = new_rgb
-        messagebox.showinfo(title='HP Result', message=f"X: {x} Y: {y} - RGB: {hp_rgb}")
-        lbl_hp_position.configure(text=f"({x}, {y})")
-        hp_position = [x, y]
+    if opacity_on == False:
+        messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+        return
+    if opacity_on == True:
+        global hp_rgb
+        global hp_position
+        messagebox.showinfo(title="HP Position", message="Position the mouse over the HP bar and press the insert key")
+        keyboard.wait('insert')
+        x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
+        while new_rgb != hp_rgb:
+            hp_rgb = new_rgb
+            messagebox.showinfo(title='HP Result', message=f"X: {x} Y: {y} - RGB: {hp_rgb}")
+            lbl_hp_position.configure(text=f"({x}, {y})")
+            hp_position = [x, y]
+            new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=get_hp_position)
 lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -141,18 +150,22 @@ lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("R
 skill1_rgb = ''
 skill1_position = ''
 def get_skill1_position():
-    global skill1_rgb
-    global skill1_position
-    messagebox.showinfo(title="Skill 1 Position", message="Position the mouse over the Skill 1 bar and press the insert key")
-    keyboard.wait('insert')
-    x, y = pyautogui.position()
-    new_rgb = pyautogui.screenshot().getpixel((x, y))
-    while new_rgb != skill1_rgb:
-        skill1_rgb = new_rgb
-        messagebox.showinfo(title='Skill 1 Result', message=f"X: {x} Y: {y} - RGB: {skill1_rgb}")
-        lbl_skill1_position.configure(text=f"({x}, {y})")
-        skill1_position = [x, y]
+    if opacity_on == False:
+        messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+        return
+    if opacity_on == True:
+        global skill1_rgb
+        global skill1_position
+        messagebox.showinfo(title="Skill 1 Position", message="Position the mouse over the Skill 1 bar and press the insert key")
+        keyboard.wait('insert')
+        x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
+        while new_rgb != skill1_rgb:
+            skill1_rgb = new_rgb
+            messagebox.showinfo(title='Skill 1 Result', message=f"X: {x} Y: {y} - RGB: {skill1_rgb}")
+            lbl_skill1_position.configure(text=f"({x}, {y})")
+            skill1_position = [x, y]
+            new_rgb = pyautogui.screenshot().getpixel((x, y))
 
 btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Skill 1 Position", command=get_skill1_position)
 lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -160,18 +173,23 @@ lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font
 skill2_rgb = ''
 skill2_position = ''
 def get_skill2_position():
-    global skill2_rgb
-    global skill2_position
-    messagebox.showinfo(title="Skill 2 Position", message="Position the mouse over the Skill 2 bar and press the insert key")
-    keyboard.wait('insert')
-    x, y = pyautogui.position()
-    new_rgb = pyautogui.screenshot().getpixel((x, y))
-    while new_rgb != skill2_rgb:
-        skill2_rgb = new_rgb
-        messagebox.showinfo(title='Skill 2 Result', message=f"X: {x} Y: {y} - RGB: {skill2_rgb}")
-        lbl_skill2_position.configure(text=f"({x}, {y})")
-        skill2_position = [x, y]
+    if opacity_on == False:
+        messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+        return
+    if opacity_on == True:
+        global skill2_rgb
+        global skill2_position
+        messagebox.showinfo(title="Skill 2 Position", message="Position the mouse over the Skill 2 bar and press the insert key")
+        keyboard.wait('insert')
+        x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
+        while new_rgb != skill2_rgb:
+            skill2_rgb = new_rgb
+            messagebox.showinfo(title='Skill 2 Result', message=f"X: {x} Y: {y} - RGB: {skill2_rgb}")
+            lbl_skill2_position.configure(text=f"({x}, {y})")
+            skill2_position = [x, y]
+            new_rgb = pyautogui.screenshot().getpixel((x, y))
+
 
 btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Skill 2 Position", command=get_skill2_position)
 lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 12), sticky="W")
@@ -217,14 +235,17 @@ def disable_opacity():
     btn_opacity.configure(text='Opacidade desativada', style='Desativado.TButton')
 
 def opacity():
+    global opacity_on
     try:
         result = hidden_client()
         style = ttk.Style()
         if result == 1:
             style.configure('Ativado.TButton', foreground='green')
             btn_opacity.configure(text='Opacidade ativada', style='Ativado.TButton')
+            opacity_on = True
         else:
             disable_opacity()
+            opacity_on = False
     except (IndexError, ValueError):
         print("Janela do Tibia não localizada")
 
@@ -283,25 +304,21 @@ def save():
             "position": cbx_skill2.current()
         },
         "mana_pos": existing_data.get('mana_pos', {"position": mana_position, "rgb": rgb}),
-        "hp_pos": {  # Salvando a posição do hp
-            "position": hp_position,
-            "rgb": hp_rgb
-        },
-        "skill1_pos": {  # Salvando a posição do hp
-            "position": skill1_position,
-            "rgb": skill1_rgb
-        },
-        "skill2_pos": {  # Salvando a posição do hp
-            "position": skill2_position,
-            "rgb": skill2_rgb
-        }
+        "hp_pos": existing_data.get('hp_pos', {"position": hp_position, "rgb": hp_rgb}),
+        "skill1_pos": existing_data.get('skill1_pos', {"position": skill1_position, "rgb": skill1_rgb}),
+        "skill2_pos": existing_data.get('skill2_pos', {"position": skill2_position, "rgb": skill2_rgb})
     }
     if loaded_filename is None:
-        loaded_filename = filedialog.asksaveasfilename(defaultextension=".json")
+        loaded_filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[('JSON files', '*.json')])
     if loaded_filename:
         with open(loaded_filename, 'w') as file:
             file.write(json.dumps(my_data))
     settings_saved = True
+
+
+
+
+
 
 def load():
     global settings_changed, loaded_filename, data
@@ -415,6 +432,7 @@ def run():
                 pyautogui.press(data['food']['value'])
                 time_food = time.time()
 
+
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
         myEvent.set()
@@ -433,11 +451,10 @@ def on_change():
     settings_saved = False
 
 def start():
-    global opacity_on
     # Verifique a opacidade da janela antes de iniciar o programa
-    #if hidden_client() == 1:
-    #    messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
-    #    return
+    if opacity_on == False:
+        messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+        return
     root.iconify()
     global data
     global settings_saved
@@ -459,6 +476,9 @@ def start():
 
 def close_program():
     global opacity_on
+    if opacity_on:
+        hidden_client()
+
     tibia_windows = gw.getWindowsWithTitle('Tibia')
     if tibia_windows:
         if opacity_on:
