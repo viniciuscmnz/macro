@@ -433,6 +433,11 @@ def on_change():
     settings_saved = False
 
 def start():
+    global opacity_on
+    # Verifique a opacidade da janela antes de iniciar o programa
+    #if hidden_client() == 1:
+    #    messagebox.showwarning("Aviso", "Por favor, ative a opacidade da tela para poder iniciar a macro")
+    #    return
     root.iconify()
     global data
     global settings_saved
@@ -450,6 +455,7 @@ def start():
     start_th.start()
     keyboard_th = threading.Thread(target=listener_keyboard)
     keyboard_th.start()
+
 
 def close_program():
     global opacity_on
