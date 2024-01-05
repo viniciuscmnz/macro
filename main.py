@@ -1,6 +1,6 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from ttkthemes import ThemedTk
-from tkinter import ttk, Checkbutton, IntVar, Label, messagebox, filedialog
+from tkinter import ttk, IntVar, Label, messagebox, filedialog
 from PIL import Image, ImageTk
 import keyboard
 import pyautogui
@@ -91,11 +91,11 @@ lbl_skill2 = generate_widget(Label, row=4, column=0, sticky="W", text="Spell L. 
 cbx_skill2 = generate_widget(Combobox, row= 4, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
 cbx_skill2.current(0)
 
-lbl_ssa = generate_widget(Label, row=9, column=0, sticky="W", text="Amulet", font=("Roboto", 10))
+lbl_ssa = generate_widget(Label, row=9, column=0, sticky="W", text="SSA", font=("Roboto", 10))
 cbx_ssa = generate_widget(Combobox, row= 9, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
 cbx_ssa.current(0)
 
-lbl_might_ring = generate_widget(Label, row=10, column=0, sticky="W", text="Ring", font=("Roboto", 10))
+lbl_might_ring = generate_widget(Label, row=10, column=0, sticky="W", text="Might Ring", font=("Roboto", 10))
 cbx_might_ring = generate_widget(Combobox, row= 10, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
 cbx_might_ring.current(0)
 
@@ -155,18 +155,18 @@ def get_ssa_position():
     if opacity_on == True:
         global ssa_rgb
         global ssa_position
-        messagebox.showinfo(title="Amulet Position", message="Position the mouse over the amulet and press the insert key.")
+        messagebox.showinfo(title="SSA Position", message="Position the mouse over the SSA and press the insert key.")
         keyboard.wait('insert')
         x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
         while new_rgb != ssa_rgb:
             ssa_rgb = new_rgb
-            messagebox.showinfo(title='Amulet Result', message=f"X: {x} Y: {y} - RGB: {ssa_rgb}")
+            messagebox.showinfo(title='SSA Result', message=f"X: {x} Y: {y} - RGB: {ssa_rgb}")
             lbl_ssa_position.configure(text=f"({x}, {y})")
             ssa_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_ssa_position = generate_widget(Button, row=9, column=2, text= "Amulet Position", command=get_ssa_position)
+btn_ssa_position = generate_widget(Button, row=9, column=2, text= "SSA Position", command=get_ssa_position)
 lbl_ssa_position = generate_widget(Label, row=9, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 might_ring_rgb = ''
@@ -178,18 +178,18 @@ def get_might_ring_position():
     if opacity_on == True:
         global might_ring_rgb
         global might_ring_position
-        messagebox.showinfo(title="Ring Position", message="Position the mouse over the ring and press the insert key.")
+        messagebox.showinfo(title="Might Ring Position", message="Position the mouse over the might ring and press the insert key.")
         keyboard.wait('insert')
         x, y = pyautogui.position()
         new_rgb = pyautogui.screenshot().getpixel((x, y))
         while new_rgb != might_ring_rgb:
             might_ring_rgb = new_rgb
-            messagebox.showinfo(title='Ring Result', message=f"X: {x} Y: {y} - RGB: {might_ring_rgb}")
+            messagebox.showinfo(title='Might Ring Result', message=f"X: {x} Y: {y} - RGB: {might_ring_rgb}")
             lbl_might_ring_position.configure(text=f"({x}, {y})")
             might_ring_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_might_ring_position = generate_widget(Button, row=10, column=2, text= "Ring Position", command=get_might_ring_position)
+btn_might_ring_position = generate_widget(Button, row=10, column=2, text= "Might Ring Position", command=get_might_ring_position)
 lbl_might_ring_position = generate_widget(Label, row=10, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 cbx_skill1 = generate_widget(Combobox, row= 3, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
@@ -286,10 +286,10 @@ btn_ssa_position_trash.configure(command=clear_ssa)
 btn_might_ring_position_trash = generate_widget(Button, row=10, column=4, image=trash, sticky="E")  # Botão de limpar para skill 2
 btn_might_ring_position_trash.configure(command=clear_might_ring)
 
-lbl_ssa_position_image = generate_widget(Label, row=9, column=0, sticky="W", text="Auto Amulet", compound='left', font=("Roboto", 10))
+lbl_ssa_position_image = generate_widget(Label, row=9, column=0, sticky="W", text="Auto SSA", compound='left', font=("Roboto", 10))
 
 
-lbl_might_ring_position_image = generate_widget(Label, row=10, column=0, font=("Roboto", 10), text="Auto Ring", compound='left', sticky="W")
+lbl_might_ring_position_image = generate_widget(Label, row=10, column=0, font=("Roboto", 10), text="Auto Might Ring", compound='left', sticky="W")
 
 
 
@@ -455,6 +455,30 @@ def run():
             close_program()
             break
 
+        if data['utura']['value'] != 'disabled':
+            if data['utura']['value'] == 'utura':
+                wait_to_cast_utura = 60.5
+            elif data['utura']['value'] == 'utura gran':
+                wait_to_cast_utura = 60.6
+            if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
+                time.sleep(1)  # Pause for 1 second before casting utura
+                pyautogui.press('F7')
+                time_utura = time.time()
+                first_press_utura = False
+
+        if data['hur']['value'] != 'disabled':
+            if data['hur']['value'] == 'utani hur':
+                wait_to_cast_hur = 29
+            elif data['hur']['value'] == 'utani gran hur':
+                wait_to_cast_hur = 19
+            elif data['hur']['value'] == 'utani tempo hur':
+                wait_to_cast_hur = 4
+            if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
+                time.sleep(1)  # Pause for 1 second before casting hur
+                pyautogui.press('f4')
+                time_hur = time.time()
+                first_press_hur = False
+
         if isinstance(data['ssa_pos']['position'], list):  
             x_hp = data['ssa_pos']['position'][0]
             y_hp = data['ssa_pos']['position'][1]
@@ -486,30 +510,6 @@ def run():
                 if data['spell']['value'] != 'disabled':
                     pyautogui.press(data['spell']['value'])
                     time.sleep(0.1) 
-
-        if data['utura']['value'] != 'disabled':
-            if data['utura']['value'] == 'utura':
-                wait_to_cast_utura = 60.5
-            elif data['utura']['value'] == 'utura gran':
-                wait_to_cast_utura = 60.6
-            if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
-                time.sleep(1)  # Pause for 1 second before casting utura
-                pyautogui.press('F7')
-                time_utura = time.time()
-                first_press_utura = False
-
-        if data['hur']['value'] != 'disabled':
-            if data['hur']['value'] == 'utani hur':
-                wait_to_cast_hur = 29
-            elif data['hur']['value'] == 'utani gran hur':
-                wait_to_cast_hur = 19
-            elif data['hur']['value'] == 'utani tempo hur':
-                wait_to_cast_hur = 4
-            if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
-                time.sleep(1)  # Pause for 1 second before casting hur
-                pyautogui.press('f4')
-                time_hur = time.time()
-                first_press_hur = False
 
         if isinstance(data['skill1_pos']['position'], list):
             x_skill1 = data['skill1_pos']['position'][0]
@@ -608,4 +608,3 @@ btn_save = generate_widget(Button, row=12, column=1, text="Save", command=save, 
 
 
 root.mainloop()
-
