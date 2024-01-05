@@ -5,8 +5,8 @@ from PIL import Image, ImageTk
 import keyboard
 import pyautogui
 from window import hidden_client
-import json
 import threading
+import json
 import pynput
 import time
 import atexit
@@ -119,7 +119,11 @@ def get_mana_position():
             mana_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=get_mana_position)
+def start_get_mana_position_thread():
+    thread = threading.Thread(target=get_mana_position)
+    thread.start()
+
+btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=start_get_mana_position_thread)
 lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 hp_rgb = ''
@@ -142,7 +146,11 @@ def get_hp_position():
             hp_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=get_hp_position)
+def start_get_hp_position_thread():
+    thread = threading.Thread(target=get_hp_position)
+    thread.start()
+
+btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=start_get_hp_position_thread)
 lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 
@@ -166,7 +174,11 @@ def get_ssa_position():
             ssa_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_ssa_position = generate_widget(Button, row=9, column=2, text= "SSA Position", command=get_ssa_position)
+def start_get_ssa_position_thread():
+    thread = threading.Thread(target=get_ssa_position)
+    thread.start()
+
+btn_ssa_position = generate_widget(Button, row=9, column=2, text= "SSA Position", command=start_get_ssa_position_thread)
 lbl_ssa_position = generate_widget(Label, row=9, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 might_ring_rgb = ''
@@ -189,7 +201,11 @@ def get_might_ring_position():
             might_ring_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_might_ring_position = generate_widget(Button, row=10, column=2, text= "Might Ring Position", command=get_might_ring_position)
+def start_get_might_ring_position_thread():
+    thread = threading.Thread(target=get_might_ring_position)
+    thread.start()
+
+btn_might_ring_position = generate_widget(Button, row=10, column=2, text= "Might Ring Position", command=start_get_might_ring_position_thread)
 lbl_might_ring_position = generate_widget(Label, row=10, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 cbx_skill1 = generate_widget(Combobox, row= 3, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
@@ -220,7 +236,11 @@ def get_skill1_position():
             skill1_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
-btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Spell H. Position", command=get_skill1_position)
+def start_get_skill1_position_thread():
+    thread = threading.Thread(target=get_skill1_position)
+    thread.start()
+
+btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Spell H. Position", command=start_get_skill1_position_thread)
 lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 skill2_rgb = ''
@@ -243,11 +263,16 @@ def get_skill2_position():
             skill2_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
+def start_get_skill2_position_thread():
+    thread = threading.Thread(target=get_skill2_position)
+    thread.start()
 
-btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Spell L. Position", command=get_skill2_position)
+
+btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Spell L. Position", command=start_get_skill2_position_thread)
 lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 trash = load_trash()
+
 
 
 def clear_mana():
