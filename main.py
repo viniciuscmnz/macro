@@ -36,10 +36,8 @@ def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwar
     my_widget.grid(row=row, column=column, padx=5, pady= 5, columnspan=columnspan, sticky=sticky)
     return my_widget
 
-def load_trash():
-    load_image = Image.open('trash-icon.jpg')
-    resized_image = load_image.resize((20, 20))
-    return ImageTk.PhotoImage(resized_image)
+
+
 
 
 sep1 = ttk.Separator(root, orient='horizontal')
@@ -271,46 +269,6 @@ def start_get_skill2_position_thread():
 btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Spell L. Position", command=start_get_skill2_position_thread)
 lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
-trash = load_trash()
-
-
-
-def clear_mana():
-    lbl_mana_position.configure(text="Empty")
-
-def clear_hp():  # Função para limpar a posição do hp
-    lbl_hp_position.configure(text="Empty")
-
-def clear_skill1():  # Função para limpar a posição da skill 1
-    lbl_skill1_position.configure(text="Empty")
-
-def clear_skill2():  # Função para limpar a posição da skill 2
-    lbl_skill2_position.configure(text="Empty")
-
-def clear_ssa():  # Função para limpar a posição da skill 2
-    lbl_ssa_position.configure(text="Empty")
-
-def clear_might_ring():  # Função para limpar a posição da skill 2
-    lbl_might_ring_position.configure(text="Empty")
-
-btn_mana_position_trash = generate_widget(Button, row=2, column=4, image=trash, sticky="E")
-btn_mana_position_trash.configure(command=clear_mana)
-
-btn_hp_position_trash = generate_widget(Button, row=1, column=4, image=trash, sticky="E")  # Botão de limpar para hp
-btn_hp_position_trash.configure(command=clear_hp)
-
-btn_skill1_position_trash = generate_widget(Button, row=3, column=4, image=trash, sticky="E")  # Botão de limpar para skill 1
-btn_skill1_position_trash.configure(command=clear_skill1)
-
-btn_skill2_position_trash = generate_widget(Button, row=4, column=4, image=trash, sticky="E")  # Botão de limpar para skill 2
-btn_skill2_position_trash.configure(command=clear_skill2)
-
-btn_ssa_position_trash = generate_widget(Button, row=9, column=4, image=trash, sticky="E")  # Botão de limpar para skill 2
-btn_ssa_position_trash.configure(command=clear_ssa)
-
-btn_might_ring_position_trash = generate_widget(Button, row=10, column=4, image=trash, sticky="E")  # Botão de limpar para skill 2
-btn_might_ring_position_trash.configure(command=clear_might_ring)
-
 lbl_ssa_position_image = generate_widget(Label, row=9, column=0, sticky="W", text="Auto SSA", compound='left', font=("Roboto", 10))
 
 
@@ -356,13 +314,10 @@ def cleanup():
 atexit.register(cleanup)
 
 
+
 def save():
     global settings_changed, loaded_filename, settings_saved
     settings_changed = False
-    existing_data = {}
-    if loaded_filename:
-        with open(loaded_filename, 'r') as file:
-            existing_data = json.loads(file.read())
     my_data = {
         "food": {
             "value": cbx_food.get(),
@@ -400,12 +355,12 @@ def save():
             "value": cbx_might_ring.get(),
             "position": cbx_might_ring.current()
         },
-        "might_ring_pos": existing_data.get('might_ring_pos', {"position": might_ring_position, "rgb": might_ring_rgb}),
-        "ssa_pos": existing_data.get('ssa_pos', {"position": ssa_position, "rgb": ssa_rgb}),
-        "mana_pos": existing_data.get('mana_pos', {"position": mana_position, "rgb": rgb}),
-        "hp_pos": existing_data.get('hp_pos', {"position": hp_position, "rgb": hp_rgb}),
-        "skill1_pos": existing_data.get('skill1_pos', {"position": skill1_position, "rgb": skill1_rgb}),
-        "skill2_pos": existing_data.get('skill2_pos', {"position": skill2_position, "rgb": skill2_rgb})
+        "might_ring_pos": {"position": might_ring_position, "rgb": might_ring_rgb},
+        "ssa_pos": {"position": ssa_position, "rgb": ssa_rgb},
+        "mana_pos": {"position": mana_position, "rgb": rgb},
+        "hp_pos": {"position": hp_position, "rgb": hp_rgb},
+        "skill1_pos": {"position": skill1_position, "rgb": skill1_rgb},
+        "skill2_pos": {"position": skill2_position, "rgb": skill2_rgb}
     }
     if loaded_filename is None:
         temp_filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[('JSON files', '*.json')])
@@ -417,6 +372,7 @@ def save():
         settings_saved = True
     else:
         settings_saved = False
+
 
 
 
@@ -630,6 +586,20 @@ btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2
 btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
 btn_save = generate_widget(Button, row=12, column=1, text="Save", command=save, width=10)
 
+def center(win):
+    win.update_idletasks()
+    width = win.winfo_width()
+    frm_width = win.winfo_rootx() - win.winfo_x()
+    win_width = width + 2 * frm_width
+    height = win.winfo_height()
+    titlebar_height = win.winfo_rooty() - win.winfo_y()
+    win_height = height + titlebar_height + frm_width
+    x = win.winfo_screenwidth() // 2 - win_width // 2
+    y = win.winfo_screenheight() // 2 - win_height // 2
+    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+    win.deiconify()
+
+center(root)
 
 
 root.mainloop()
