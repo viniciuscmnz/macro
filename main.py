@@ -316,7 +316,7 @@ atexit.register(cleanup)
 
 
 def save():
-    global settings_changed, loaded_filename, settings_saved
+    global settings_changed, loaded_filename, settings_saved, my_data
     settings_changed = False
     my_data = {
         "food": {
@@ -339,11 +339,11 @@ def save():
             "value": cbx_hp_heal.get(),
             "position": cbx_hp_heal.current()
         },
-        "skill1": {  # Salvando a posição da skill 1
+        "skill1": {
             "value": cbx_skill1.get(),
             "position": cbx_skill1.current()
         },
-        "skill2": {  # Salvando a posição da skill 2
+        "skill2": {
             "value": cbx_skill2.get(),
             "position": cbx_skill2.current()
         },
@@ -362,25 +362,29 @@ def save():
         "skill1_pos": {"position": skill1_position, "rgb": skill1_rgb},
         "skill2_pos": {"position": skill2_position, "rgb": skill2_rgb}
     }
+
+    if loaded_filename:
+        with open(loaded_filename, 'r') as file:
+            existing_data = json.load(file)
+    else:
+        existing_data = {}
+
+    existing_data.update(my_data)
+
     if loaded_filename is None:
         temp_filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[('JSON files', '*.json')])
-        if temp_filename:  # Se o usuário selecionou um arquivo
+        if temp_filename:
             loaded_filename = temp_filename
     if loaded_filename:
         with open(loaded_filename, 'w') as file:
-            file.write(json.dumps(my_data))
+            file.write(json.dumps(existing_data))
         settings_saved = True
     else:
         settings_saved = False
 
 
-
-
-
-
-
 def load():
-    global settings_changed, loaded_filename, data
+    global settings_changed, loaded_filename, data, my_data
     settings_changed = True
     filename = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
     if filename:
@@ -402,8 +406,24 @@ def load():
         lbl_skill2_position.configure(text=data['skill2_pos']['position'])
         lbl_ssa_position.configure(text=data['ssa_pos']['position'])
         lbl_might_ring_position.configure(text=data['might_ring_pos']['position'])
-        return data
+        
+        # Carregando as informações rgb
+        global skill2_rgb, skill2_position, skill1_rgb, skill1_position, hp_rgb, hp_position, rgb, mana_position, ssa_position, ssa_rgb, might_ring_position, might_ring_rgb
+        skill2_rgb = data['skill2_pos']['rgb']
+        skill2_position = data['skill2_pos']['position']
+        skill1_rgb = data['skill1_pos']['rgb']
+        skill1_position = data['skill1_pos']['position']
+        hp_rgb = data['hp_pos']['rgb']
+        hp_position = data['hp_pos']['position']
+        rgb = data['mana_pos']['rgb']
+        mana_position = data['mana_pos']['position']
+        ssa_rgb = data['ssa_pos']['rgb']
+        ssa_position = data['ssa_pos']['position']
+        might_ring_rgb = data['might_ring_pos']['rgb']
+        might_ring_position = data['might_ring_pos']['position']
 
+        # Salve as configurações atuais do programa em my_data
+        my_data = data.copy()
 
 opacity_on = False
 
