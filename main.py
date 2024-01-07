@@ -1,7 +1,6 @@
 from tkinter.ttk import Label, Button, Combobox, Style
 from ttkthemes import ThemedTk
 from tkinter import ttk, IntVar, Label, messagebox, filedialog
-from PIL import Image, ImageTk
 import keyboard
 import pyautogui
 from window import hidden_client
@@ -12,6 +11,8 @@ import time
 import atexit
 import win32gui
 import pygetwindow as gw
+from tkinter import ttk
+
 
 
 root = ThemedTk(theme="Black", themebg=True)
@@ -41,36 +42,36 @@ def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwar
 
 
 sep1 = ttk.Separator(root, orient='horizontal')
-sep1.grid(row=0, column=0, columnspan=8, sticky='ew')
+sep1.grid(row=0, column=1, columnspan=8, sticky='ew')
 
 sep2 = ttk.Separator(root, orient='horizontal')
-sep2.grid(row=5, column=0, columnspan=8, sticky='ew')
-
-sep3 = ttk.Separator(root, orient='horizontal')
-sep3.grid(row=11, column=0, columnspan=8, sticky='ew')
+sep2.grid(row=5, column=1, columnspan=8, sticky='ew')
 
 sep_vertical = ttk.Separator(root, orient='vertical')
 sep_vertical.grid(row=1, column=7, rowspan=10, sticky='ns')
 
 
+lbl_utura = generate_widget(Label, row=8, column=0, sticky="W", text="Recovery (F9)", font=("Roboto", 10))
+utura = IntVar()
+cbx_utura = ttk.Checkbutton(root, variable=utura)
+cbx_utura.grid(row=8, column=1, padx=5, pady=5, sticky="W")
 
 
+lbl_auto_hur = generate_widget(Label, row=7, column=0, sticky="W", text="Auto Hur (F10)", font=("Roboto", 10))
+auto_hur = IntVar()
+cbx_auto_hur = ttk.Checkbutton(root, variable=auto_hur)
+cbx_auto_hur.grid(row=7, column=1, padx=5, pady=5, sticky="W")
+
+
+lbl_food = generate_widget(Label, row=6, column=0, sticky="W", text="Auto Food (F11)", font=("Roboto", 10))
+food = IntVar()
+cbx_food = ttk.Checkbutton(root, variable=food)
+cbx_food.grid(row=6, column=1, padx=5, pady=5, sticky="W")
 
 
 lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 13, 'bold'))
 lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utility", font=("Roboto", 13, 'bold'))
 
-lbl_food = generate_widget(Label, row=6, column=0, sticky="W", text="Auto Food", font=("Roboto", 10))
-cbx_food = generate_widget(Combobox, row=6, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
-cbx_food.current(0)
-
-lbl_utura = generate_widget(Label, row=8, column=0, sticky="W", text="Recovery (F7)", font=("Roboto", 10))
-cbx_utura = generate_widget(Combobox, row=8, column=1, values=UTURA, state="readonly", font=("Roboto", 10), width= 12)
-cbx_utura.current(0)
-
-lbl_hur = generate_widget(Label, row=7, column=0, sticky="W", text="Auto Hur (F4)", font=("Roboto", 10))
-cbx_hur = generate_widget(Combobox, row=7, column=1, values=HUR, state="readonly", font=("Roboto", 10), width= 12)
-cbx_hur.current(0)
 
 lbl_cast = generate_widget(Label, row=2, column=0, sticky="W", text="Mana Potion", font=("Roboto", 10))
 cbx_cast = generate_widget(Combobox, row= 2, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
@@ -298,7 +299,7 @@ def opacity():
 
 style = ttk.Style()
 style.configure('Neutro.TButton', foreground='black')  # Cor neutra para o estado inicial
-btn_opacity = generate_widget(Button, row=12, column=0, text="Enable Opacity", columnspan=1, command=opacity, width=20)
+btn_opacity = generate_widget(Button, row=14, column=0, text="Enable Opacity", columnspan=1, command=opacity, width=20)
 btn_opacity.configure(style='Neutro.TButton')  # Inicia a função como neutra
 
 
@@ -318,19 +319,7 @@ atexit.register(cleanup)
 def save():
     global settings_changed, loaded_filename, settings_saved, my_data
     settings_changed = False
-    my_data = {
-        "food": {
-            "value": cbx_food.get(),
-            "position": cbx_food.current()
-        },
-        "hur":{
-            "value": cbx_hur.get(),
-            "position": cbx_hur.current()
-        },
-        "utura":{
-            "value": cbx_utura.get(),
-            "position": cbx_utura.current()
-        },        
+    my_data = {     
         "spell": {
             "value": cbx_cast.get(),
             "position": cbx_cast.current()
@@ -393,7 +382,6 @@ def load():
             data = json.loads(file.read())
         cbx_food.current(data['food']['position'])
         cbx_cast.current(data['spell']['position'])
-        cbx_hur.current(data['hur']['position'])
         cbx_utura.current(data['utura']['position'])
         cbx_hp_heal.current(data['hp_heal']['position'])
         cbx_skill1.current(data['skill1']['position'])  # Carregando a posição da skill 1
@@ -428,14 +416,9 @@ def load():
 opacity_on = False
 
 def run():
+
     first_press_utura = True
-    first_press_hur = True
-
-    wait_to_eat_food = 60
-    time_food = time.time() - wait_to_eat_food
-
     time_utura = time.time()
-    time_hur = time.time()
 
     while not myEvent.is_set():
         tibia_windows = gw.getWindowsWithTitle('Tibia')
@@ -456,30 +439,6 @@ def run():
             close_program()
             break
 
-        if data['utura']['value'] != 'disabled':
-            if data['utura']['value'] == 'utura':
-                wait_to_cast_utura = 60.5
-            elif data['utura']['value'] == 'utura gran':
-                wait_to_cast_utura = 60.6
-            if first_press_utura or int(time.time() - time_utura) >= wait_to_cast_utura:
-                time.sleep(1)  # Pause for 1 second before casting utura
-                pyautogui.press('F7')
-                time_utura = time.time()
-                first_press_utura = False
-
-        if data['hur']['value'] != 'disabled':
-            if data['hur']['value'] == 'utani hur':
-                wait_to_cast_hur = 29
-            elif data['hur']['value'] == 'utani gran hur':
-                wait_to_cast_hur = 19
-            elif data['hur']['value'] == 'utani tempo hur':
-                wait_to_cast_hur = 4
-            if first_press_hur or int(time.time() - time_hur) >= wait_to_cast_hur:
-                time.sleep(1)  # Pause for 1 second before casting hur
-                pyautogui.press('f4')
-                time_hur = time.time()
-                first_press_hur = False
-
         if isinstance(data['ssa_pos']['position'], list):  
             x_hp = data['ssa_pos']['position'][0]
             y_hp = data['ssa_pos']['position'][1]
@@ -487,6 +446,7 @@ def run():
                 if data['ssa']['value'] != 'disabled':
                     pyautogui.press(data['ssa']['value'])
                     time.sleep(0.1) 
+
 
         if isinstance(data['might_ring_pos']['position'], list):  
             x_hp = data['might_ring_pos']['position'][0]
@@ -528,10 +488,65 @@ def run():
                     pyautogui.press(data['skill2']['value'])
                     time.sleep(0.1) 
 
-        if data['food']['value'] != 'disabled':
-            if int(time.time() - time_food) >= wait_to_eat_food:
-                pyautogui.press(data['food']['value'])
-                time_food = time.time()
+
+        if auto_hur.get() == 1:
+            try:
+                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+                if barra is not None:
+                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
+                    while True:  # Adicionamos um loop para continuar procurando
+                        try:
+                            haste_img = pyautogui.locateOnScreen('haste.png', region=barra_tuple, confidence=0.6)
+                            if haste_img is not None:
+                                break  # Se a imagem for encontrada, saímos do loop
+                        except pyautogui.ImageNotFoundException:
+                            time.sleep(0.1)
+                            pyautogui.write(['f10'])  # Use a função write para simular a tecla F4 sendo pressionada
+                            break
+            except pyautogui.ImageNotFoundException:
+                break
+
+        if food.get() == 1:
+            try:
+                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+                if barra is not None:
+                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
+                    while True:  # Adicionamos um loop para continuar procurando
+                        try:
+                            food_img = pyautogui.locateOnScreen('fome.png', region=barra_tuple, confidence=0.6)
+                            if food_img is not None:
+                                time.sleep(0.1)
+                                pyautogui.write(['f11'])  # Use a função write para simular a tecla F4 sendo pressionada
+                                break  # Se a imagem for encontrada, saímos do loop
+                        except pyautogui.ImageNotFoundException:
+                            break
+            except pyautogui.ImageNotFoundException:
+                break
+
+        if utura.get() == 1:
+            try:
+                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+                if barra is not None:
+                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
+                    while True:  # Adicionamos um loop para continuar procurando
+                        try:
+                            utura_img = pyautogui.locateOnScreen('utura.png', region=barra_tuple, confidence=0.6)
+                            if utura_img is not None:
+                                break  # Se a imagem for encontrada, saímos do loop
+                        except pyautogui.ImageNotFoundException:
+                            time.sleep(0.1)
+                            pyautogui.write(['f9'])  # Use a função write para simular a tecla F4 sendo pressionada
+                            break
+            except pyautogui.ImageNotFoundException:
+                break
+
+
+
+
+
+
+
+
 
 
 def key_code(key):
@@ -555,7 +570,7 @@ def start():
     save()
     # Verifique a opacidade da janela antes de iniciar o programa
     if opacity_on == False:
-        messagebox.showwarning("Warning", "Please save the settings before starting the bot.")
+        messagebox.showwarning("Warning", "Please activate the screen opacity so that you can start the bot.")
         return
     root.iconify()
     global data
@@ -602,9 +617,9 @@ def close_program():
 
 root.protocol("WM_DELETE_WINDOW", close_program)
 
-btn_start = generate_widget(Button, row=12, column=3, text="Start", columnspan=2, command=start, width=10)
-btn_load = generate_widget(Button, row=12, column=2, text="Load", command=load, width=10)
-btn_save = generate_widget(Button, row=12, column=1, text="Save", command=save, width=10)
+btn_start = generate_widget(Button, row=14, column=3, text="Start", columnspan=2, command=start, width=10)
+btn_load = generate_widget(Button, row=14, column=2, text="Load", command=load, width=10)
+btn_save = generate_widget(Button, row=14, column=1, text="Save", command=save, width=10)
 
 def center(win):
     win.update_idletasks()
