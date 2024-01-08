@@ -23,7 +23,7 @@ style = Style()
 style.configure('TButton', font=("Roboto", 10))
 style.configure('Ativado.TButton', foreground="green")
 style.configure('Desativado.TButton', foreground="red")
-icon_path = os.path.join(os.getcwd(), "icon.ico")
+icon_path = os.path.join(os.getcwd(), "AssistBOT.ico")
 root.iconbitmap(icon_path)
 
 HOTKEYS = ["disabled", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11"]
