@@ -30,8 +30,8 @@ def hidden_client():
     try:
         target_window = [item for item in gw.getWindowsWithTitle(WINDOW_TITLE) if item.title == WINDOW_TITLE][0]
     except:
-        pyautogui.alert(title="Hidden Client Tibia", text='Janela do Tibia não localizada')
-        raise ValueError('Janela do Tibia não localizada')
+        pyautogui.alert(title="Hidden Client Tibia", text='Tibia window not located.')
+        raise ValueError('Tibia window not located.')
 
     target_hwnd = target_window._hWnd
 
