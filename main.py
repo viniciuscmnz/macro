@@ -126,7 +126,6 @@ def get_mana_position():
         while new_rgb != rgb:
             rgb = new_rgb
             messagebox.showinfo(title='Mana Result', message=f"X: {x} Y: {y} - RGB: {rgb}")
-            lbl_mana_position.configure(text=f"({x}, {y})")
             mana_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -135,7 +134,6 @@ def start_get_mana_position_thread():
     thread.start()
 
 btn_mana_position = generate_widget(Button, row=2, column=2, text= "Mana Position", command=start_get_mana_position_thread)
-lbl_mana_position = generate_widget(Label, row=2, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 hp_rgb = ''
 hp_position = ''
@@ -153,7 +151,6 @@ def get_hp_position():
         while new_rgb != hp_rgb:
             hp_rgb = new_rgb
             messagebox.showinfo(title='HP Result', message=f"X: {x} Y: {y} - RGB: {hp_rgb}")
-            lbl_hp_position.configure(text=f"({x}, {y})")
             hp_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -162,7 +159,6 @@ def start_get_hp_position_thread():
     thread.start()
 
 btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=start_get_hp_position_thread)
-lbl_hp_position = generate_widget(Label, row=1, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 
 ssa_rgb = ''
@@ -181,7 +177,6 @@ def get_ssa_position():
         while new_rgb != ssa_rgb:
             ssa_rgb = new_rgb
             messagebox.showinfo(title='SSA Result', message=f"X: {x} Y: {y} - RGB: {ssa_rgb}")
-            lbl_ssa_position.configure(text=f"({x}, {y})")
             ssa_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -190,7 +185,6 @@ def start_get_ssa_position_thread():
     thread.start()
 
 btn_ssa_position = generate_widget(Button, row=11, column=2, text= "SSA Position", command=start_get_ssa_position_thread)
-lbl_ssa_position = generate_widget(Label, row=11, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 might_ring_rgb = ''
 might_ring_position = ''
@@ -208,7 +202,7 @@ def get_might_ring_position():
         while new_rgb != might_ring_rgb:
             might_ring_rgb = new_rgb
             messagebox.showinfo(title='Might Ring Result', message=f"X: {x} Y: {y} - RGB: {might_ring_rgb}")
-            lbl_might_ring_position.configure(text=f"({x}, {y})")
+            btn_might_ring_position.configure(text=f"({x}, {y})")
             might_ring_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -217,7 +211,6 @@ def start_get_might_ring_position_thread():
     thread.start()
 
 btn_might_ring_position = generate_widget(Button, row=12, column=2, text= "Might Ring Position", command=start_get_might_ring_position_thread)
-lbl_might_ring_position = generate_widget(Label, row=12, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 cbx_skill1 = generate_widget(Combobox, row= 3, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
 cbx_skill1.current(0)
@@ -243,7 +236,6 @@ def get_skill1_position():
         while new_rgb != skill1_rgb:
             skill1_rgb = new_rgb
             messagebox.showinfo(title='Spell H. Result', message=f"X: {x} Y: {y} - RGB: {skill1_rgb}")
-            lbl_skill1_position.configure(text=f"({x}, {y})")
             skill1_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -252,7 +244,6 @@ def start_get_skill1_position_thread():
     thread.start()
 
 btn_skill1_position = generate_widget(Button, row=3, column=2, text= "Spell H. Position", command=start_get_skill1_position_thread)
-lbl_skill1_position = generate_widget(Label, row=3, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
 
 skill2_rgb = ''
 skill2_position = ''
@@ -270,7 +261,6 @@ def get_skill2_position():
         while new_rgb != skill2_rgb:
             skill2_rgb = new_rgb
             messagebox.showinfo(title='Spell L. Result', message=f"X: {x} Y: {y} - RGB: {skill2_rgb}")
-            lbl_skill2_position.configure(text=f"({x}, {y})")
             skill2_position = [x, y]
             new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -280,10 +270,6 @@ def start_get_skill2_position_thread():
 
 
 btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Spell L. Position", command=start_get_skill2_position_thread)
-lbl_skill2_position = generate_widget(Label, row=4, column=3, text="Empty", font=("Roboto", 10), sticky="W", width=8)
-
-
-
 
 def disable_opacity():
     # Adicione aqui o código para desativar a opacidade
@@ -310,10 +296,6 @@ style.configure('Neutro.TButton', foreground='black')  # Cor neutra para o estad
 btn_opacity = generate_widget(Button, row=14, column=0, text="Enable Opacity", columnspan=1, command=opacity, width=20)
 btn_opacity.configure(style='Neutro.TButton')  # Inicia a função como neutra
 
-
-
-
-
 def cleanup():
     try:
         btn_opacity.configure(style='Desativado.TButton')  # Desativa a função quando o programa é fechado
@@ -321,8 +303,6 @@ def cleanup():
         print("Tibia window not found.")
 
 atexit.register(cleanup)
-
-
 
 def save():
     global settings_changed, loaded_filename, settings_saved, my_data
@@ -395,12 +375,7 @@ def load():
         cbx_skill2.current(data['skill2']['position'])  # Carregando a posição da skill 2
         cbx_ssa.current(data['ssa']['position'])
         cbx_might_ring.current(data['might_ring']['position'])
-        lbl_mana_position.configure(text=data['mana_pos']['position'])
-        lbl_hp_position.configure(text=data['hp_pos']['position'])  # Carregando a posição do hp
-        lbl_skill1_position.configure(text=data['skill1_pos']['position'])
-        lbl_skill2_position.configure(text=data['skill2_pos']['position'])
-        lbl_ssa_position.configure(text=data['ssa_pos']['position'])
-        lbl_might_ring_position.configure(text=data['might_ring_pos']['position'])
+
         
         # Carregando as informações rgb
         global skill2_rgb, skill2_position, skill1_rgb, skill1_position, hp_rgb, hp_position, rgb, mana_position, ssa_position, ssa_rgb, might_ring_position, might_ring_rgb
@@ -427,23 +402,6 @@ def run():
 
 
     while not myEvent.is_set():
-        tibia_windows = gw.getWindowsWithTitle('Tibia')
-        if tibia_windows:
-            try:
-                tibia = tibia_windows[0]
-                tibia.activate()
-            except IndexError:
-                print("Tibia window activation error.")
-                close_program()
-                break
-        else:
-            print("Tibia window not found.")
-            global opacity_on
-            if opacity_on:
-                opacity_on = False
-                opacity()
-            close_program()
-            break
 
         if isinstance(data['ssa_pos']['position'], list):  
             x_hp = data['ssa_pos']['position'][0]
@@ -563,22 +521,12 @@ def run():
             except pyautogui.ImageNotFoundException:
                 break
 
-
-
-
-
-
-
-
-
-
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
         myEvent.set()
         root.deiconify()
         win32gui.SetForegroundWindow(root.winfo_id())
         return False
-
 
 def listener_keyboard():
     with pynput.keyboard.Listener(on_press=key_code) as Listener:
@@ -595,7 +543,6 @@ def start():
     if opacity_on == False:
         messagebox.showwarning("Warning", "Please activate the screen opacity so that you can start the assistant.")
         return
-    root.iconify()
     global data
     global settings_saved
     # Verifique se as configurações foram salvas antes de iniciar o programa
@@ -637,12 +584,10 @@ def close_program():
     disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
 
 
-
 root.protocol("WM_DELETE_WINDOW", close_program)
 
-btn_start = generate_widget(Button, row=14, column=3, text="Start", columnspan=2, command=start, width=10)
-btn_load = generate_widget(Button, row=14, column=2, text="Load", command=load, width=10)
-btn_save = generate_widget(Button, row=14, column=1, text="Save", command=save, width=10)
+btn_start = generate_widget(Button, row=14, column=2, text="Start", columnspan=1, command=start, width=10)
+btn_load = generate_widget(Button, row=14, column=1, text="Load", command=load, width=10)
 
 def center(win):
     win.update_idletasks()
@@ -658,6 +603,5 @@ def center(win):
     win.deiconify()
 
 center(root)
-
 
 root.mainloop()
