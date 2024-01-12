@@ -468,7 +468,7 @@ def run():
                             pyautogui.write(['f9'])  # Use a função write para simular a tecla F4 sendo pressionada
                             break
             except pyautogui.ImageNotFoundException:
-                break
+                pass
 
         if utamo.get() == 1:
             try:
@@ -485,7 +485,7 @@ def run():
                             pyautogui.write(['f11'])  # Use a função write para simular a tecla F4 sendo pressionada
                             break
             except pyautogui.ImageNotFoundException:
-                break
+                pass
 
         if food.get() == 1:
             try:
@@ -502,7 +502,7 @@ def run():
                         except pyautogui.ImageNotFoundException:
                             break
             except pyautogui.ImageNotFoundException:
-                break
+                pass
 
         if utura.get() == 1:
             try:
@@ -519,7 +519,7 @@ def run():
                             pyautogui.write(['f10'])  # Use a função write para simular a tecla F4 sendo pressionada
                             break
             except pyautogui.ImageNotFoundException:
-                break
+                pass
 
 def key_code(key):
     if key == pynput.keyboard.Key.f12:
