@@ -381,6 +381,7 @@ opacity_on = False
 
 def run():
 
+
     while not myEvent.is_set():
         tibia_windows = gw.getWindowsWithTitle('Tibia')
         if tibia_windows:
@@ -400,12 +401,21 @@ def run():
             close_program()
             break
 
-        if isinstance(data['skill1_pos']['position'], list):
-            x_skill1 = data['skill1_pos']['position'][0]
-            y_skill1 = data['skill1_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
-                if data['skill1']['value'] != 'disabled':
-                    pyautogui.press(data['skill1']['value'])
+        if isinstance(data['ssa_pos']['position'], list):  
+            x_hp = data['ssa_pos']['position'][0]
+            y_hp = data['ssa_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['ssa_pos']['rgb'])):
+                if data['ssa']['value'] != 'disabled':
+                    pyautogui.press(data['ssa']['value'])
+                    time.sleep(0.1) 
+
+
+        if isinstance(data['might_ring_pos']['position'], list):  
+            x_hp = data['might_ring_pos']['position'][0]
+            y_hp = data['might_ring_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['might_ring_pos']['rgb'])):
+                if data['might_ring']['value'] != 'disabled':
+                    pyautogui.press(data['might_ring']['value'])
                     time.sleep(0.1) 
 
         if isinstance(data['hp_pos']['position'], list):  
@@ -424,6 +434,14 @@ def run():
                     pyautogui.press(data['spell']['value'])
                     time.sleep(0.1) 
 
+        if isinstance(data['skill1_pos']['position'], list):
+            x_skill1 = data['skill1_pos']['position'][0]
+            y_skill1 = data['skill1_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
+                if data['skill1']['value'] != 'disabled':
+                    pyautogui.press(data['skill1']['value'])
+                    time.sleep(0.1) 
+
         if isinstance(data['skill2_pos']['position'], list):
             x_skill2 = data['skill2_pos']['position'][0]
             y_skill2 = data['skill2_pos']['position'][1]
@@ -432,22 +450,6 @@ def run():
                     pyautogui.press(data['skill2']['value'])
                     time.sleep(0.1) 
 
-        if isinstance(data['ssa_pos']['position'], list):  
-            x_hp = data['ssa_pos']['position'][0]
-            y_hp = data['ssa_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['ssa_pos']['rgb'])):
-                if data['ssa']['value'] != 'disabled':
-                    pyautogui.press(data['ssa']['value'])
-                    time.sleep(0.1) 
-
-
-        if isinstance(data['might_ring_pos']['position'], list):  
-            x_hp = data['might_ring_pos']['position'][0]
-            y_hp = data['might_ring_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['might_ring_pos']['rgb'])):
-                if data['might_ring']['value'] != 'disabled':
-                    pyautogui.press(data['might_ring']['value'])
-                    time.sleep(0.1) 
 
         if auto_hur.get() == 1:
             try:
@@ -483,23 +485,6 @@ def run():
             except pyautogui.ImageNotFoundException:
                 pass
 
-        if utura.get() == 1:
-            try:
-                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
-                if barra is not None:
-                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
-                    while True:  # Adicionamos um loop para continuar procurando
-                        try:
-                            utura_img = pyautogui.locateOnScreen('utura.png', region=barra_tuple, confidence=0.6)
-                            if utura_img is not None:
-                                break  # Se a imagem for encontrada, saímos do loop
-                        except pyautogui.ImageNotFoundException:
-                            time.sleep(0.1)
-                            pyautogui.write(['f10'])  # Use a função write para simular a tecla F4 sendo pressionada
-                            break
-            except pyautogui.ImageNotFoundException:
-                pass
-
         if food.get() == 1:
             try:
                 barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
@@ -513,6 +498,23 @@ def run():
                                 pyautogui.write(['f8'])  # Use a função write para simular a tecla F4 sendo pressionada
                                 break  # Se a imagem for encontrada, saímos do loop
                         except pyautogui.ImageNotFoundException:
+                            break
+            except pyautogui.ImageNotFoundException:
+                pass
+
+        if utura.get() == 1:
+            try:
+                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+                if barra is not None:
+                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
+                    while True:  # Adicionamos um loop para continuar procurando
+                        try:
+                            utura_img = pyautogui.locateOnScreen('utura.png', region=barra_tuple, confidence=0.6)
+                            if utura_img is not None:
+                                break  # Se a imagem for encontrada, saímos do loop
+                        except pyautogui.ImageNotFoundException:
+                            time.sleep(0.1)
+                            pyautogui.write(['f10'])  # Use a função write para simular a tecla F4 sendo pressionada
                             break
             except pyautogui.ImageNotFoundException:
                 pass
