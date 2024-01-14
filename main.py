@@ -14,8 +14,6 @@ import pygetwindow as gw
 from tkinter import ttk
 import os
 
-
-
 root = ThemedTk(theme="Black", themebg=True)
 root.title("Assistant")
 root.resizable(False, False)
@@ -39,10 +37,6 @@ def generate_widget(widget, row, column, sticky="NSEW", columnspan= None, **kwar
     my_widget.grid(row=row, column=column, padx=5, pady= 5, columnspan=columnspan, sticky=sticky)
     return my_widget
 
-
-
-
-
 sep1 = ttk.Separator(root, orient='horizontal')
 sep1.grid(row=0, column=0, columnspan=8, sticky='ew')
 
@@ -52,10 +46,8 @@ sep2.grid(row=5, column=0, columnspan=8, sticky='ew')
 sep3 = ttk.Separator(root, orient='horizontal')
 sep3.grid(row=10, column=0, columnspan=8, sticky='ew')
 
-
 sep_vertical = ttk.Separator(root, orient='vertical')
 sep_vertical.grid(row=1, column=7, rowspan=10, sticky='ns')
-
 
 lbl_utura = generate_widget(Label, row=8, column=0, sticky="W", text="Recovery (F10)", font=("Roboto", 10))
 utura = IntVar()
@@ -67,23 +59,19 @@ utamo = IntVar()
 cbx_utamo = ttk.Checkbutton(root, variable=utamo)
 cbx_utamo.grid(row=9, column=1, padx=5, pady=5, sticky="W")
 
-
 lbl_auto_hur = generate_widget(Label, row=7, column=0, sticky="W", text="Auto Hur (F9)", font=("Roboto", 10))
 auto_hur = IntVar()
 cbx_auto_hur = ttk.Checkbutton(root, variable=auto_hur)
 cbx_auto_hur.grid(row=7, column=1, padx=5, pady=5, sticky="W")
-
 
 lbl_food = generate_widget(Label, row=6, column=0, sticky="W", text="Auto Food (F8)", font=("Roboto", 10))
 food = IntVar()
 cbx_food = ttk.Checkbutton(root, variable=food)
 cbx_food.grid(row=6, column=1, padx=5, pady=5, sticky="W")
 
-
 lbl_healing = generate_widget(Label, row=0, column=0, sticky="W", text="Healing", font=("Roboto", 13, 'bold'))
 lbl_war_utilities = generate_widget(Label, row=10, column=0, sticky="W", text="War Utility", font=("Roboto", 13, 'bold'))
 lbl_utilities = generate_widget(Label, row=5, column=0, sticky="W", text="Utility", font=("Roboto", 13, 'bold'))
-
 
 lbl_cast = generate_widget(Label, row=2, column=0, sticky="W", text="Mana Potion", font=("Roboto", 10))
 cbx_cast = generate_widget(Combobox, row= 2, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
@@ -160,7 +148,6 @@ def start_get_hp_position_thread():
 
 btn_hp_position = generate_widget(Button, row=1, column=2, text= "HP Position", command=start_get_hp_position_thread)
 
-
 ssa_rgb = ''
 ssa_position = ''
 def get_ssa_position():
@@ -218,7 +205,6 @@ cbx_skill1.current(0)
 cbx_skill2 = generate_widget(Combobox, row= 4, column=1, values=HOTKEYS, state="readonly", font=("Roboto", 10), width= 12)
 cbx_skill2.current(0)
 
-
 # Adicionando as funções para obter a posição das skills
 skill1_rgb = ''
 skill1_position = ''
@@ -267,7 +253,6 @@ def get_skill2_position():
 def start_get_skill2_position_thread():
     thread = threading.Thread(target=get_skill2_position)
     thread.start()
-
 
 btn_skill2_position = generate_widget(Button, row=4, column=2, text= "Spell L. Position", command=start_get_skill2_position_thread)
 
@@ -359,8 +344,6 @@ def save():
     else:
         settings_saved = False
 
-
-
 def load():
     global settings_changed, loaded_filename, data, my_data
     settings_changed = True
@@ -376,7 +359,6 @@ def load():
         cbx_ssa.current(data['ssa']['position'])
         cbx_might_ring.current(data['might_ring']['position'])
 
-        
         # Carregando as informações rgb
         global skill2_rgb, skill2_position, skill1_rgb, skill1_position, hp_rgb, hp_position, rgb, mana_position, ssa_position, ssa_rgb, might_ring_position, might_ring_rgb
         skill2_rgb = data['skill2_pos']['rgb']
@@ -395,29 +377,35 @@ def load():
         # Salve as configurações atuais do programa em my_data
         my_data = data.copy()
 
-
 opacity_on = False
 
 def run():
 
-
     while not myEvent.is_set():
+        tibia_windows = gw.getWindowsWithTitle('Tibia')
+        if tibia_windows:
+            try:
+                tibia = tibia_windows[0]
+                tibia.activate()
+            except IndexError:
+                print("Tibia window activation error.")
+                close_program()
+                break
+        else:
+            print("Tibia window not found.")
+            global opacity_on
+            if opacity_on:
+                opacity_on = False
+                opacity()
+            close_program()
+            break
 
-        if isinstance(data['ssa_pos']['position'], list):  
-            x_hp = data['ssa_pos']['position'][0]
-            y_hp = data['ssa_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['ssa_pos']['rgb'])):
-                if data['ssa']['value'] != 'disabled':
-                    pyautogui.press(data['ssa']['value'])
-                    time.sleep(0.1) 
-
-
-        if isinstance(data['might_ring_pos']['position'], list):  
-            x_hp = data['might_ring_pos']['position'][0]
-            y_hp = data['might_ring_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['might_ring_pos']['rgb'])):
-                if data['might_ring']['value'] != 'disabled':
-                    pyautogui.press(data['might_ring']['value'])
+        if isinstance(data['skill1_pos']['position'], list):
+            x_skill1 = data['skill1_pos']['position'][0]
+            y_skill1 = data['skill1_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
+                if data['skill1']['value'] != 'disabled':
+                    pyautogui.press(data['skill1']['value'])
                     time.sleep(0.1) 
 
         if isinstance(data['hp_pos']['position'], list):  
@@ -436,14 +424,6 @@ def run():
                     pyautogui.press(data['spell']['value'])
                     time.sleep(0.1) 
 
-        if isinstance(data['skill1_pos']['position'], list):
-            x_skill1 = data['skill1_pos']['position'][0]
-            y_skill1 = data['skill1_pos']['position'][1]
-            if not pyautogui.pixelMatchesColor(x_skill1, y_skill1, tuple(data['skill1_pos']['rgb'])):
-                if data['skill1']['value'] != 'disabled':
-                    pyautogui.press(data['skill1']['value'])
-                    time.sleep(0.1) 
-
         if isinstance(data['skill2_pos']['position'], list):
             x_skill2 = data['skill2_pos']['position'][0]
             y_skill2 = data['skill2_pos']['position'][1]
@@ -452,6 +432,22 @@ def run():
                     pyautogui.press(data['skill2']['value'])
                     time.sleep(0.1) 
 
+        if isinstance(data['ssa_pos']['position'], list):  
+            x_hp = data['ssa_pos']['position'][0]
+            y_hp = data['ssa_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['ssa_pos']['rgb'])):
+                if data['ssa']['value'] != 'disabled':
+                    pyautogui.press(data['ssa']['value'])
+                    time.sleep(0.1) 
+
+
+        if isinstance(data['might_ring_pos']['position'], list):  
+            x_hp = data['might_ring_pos']['position'][0]
+            y_hp = data['might_ring_pos']['position'][1]
+            if not pyautogui.pixelMatchesColor(x_hp, y_hp, tuple(data['might_ring_pos']['rgb'])):
+                if data['might_ring']['value'] != 'disabled':
+                    pyautogui.press(data['might_ring']['value'])
+                    time.sleep(0.1) 
 
         if auto_hur.get() == 1:
             try:
@@ -487,23 +483,6 @@ def run():
             except pyautogui.ImageNotFoundException:
                 pass
 
-        if food.get() == 1:
-            try:
-                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
-                if barra is not None:
-                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
-                    while True:  # Adicionamos um loop para continuar procurando
-                        try:
-                            food_img = pyautogui.locateOnScreen('fome.png', region=barra_tuple, confidence=0.6)
-                            if food_img is not None:
-                                time.sleep(0.1)
-                                pyautogui.write(['f8'])  # Use a função write para simular a tecla F4 sendo pressionada
-                                break  # Se a imagem for encontrada, saímos do loop
-                        except pyautogui.ImageNotFoundException:
-                            break
-            except pyautogui.ImageNotFoundException:
-                pass
-
         if utura.get() == 1:
             try:
                 barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
@@ -517,6 +496,23 @@ def run():
                         except pyautogui.ImageNotFoundException:
                             time.sleep(0.1)
                             pyautogui.write(['f10'])  # Use a função write para simular a tecla F4 sendo pressionada
+                            break
+            except pyautogui.ImageNotFoundException:
+                pass
+
+        if food.get() == 1:
+            try:
+                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+                if barra is not None:
+                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))  # Converte os valores em inteiros
+                    while True:  # Adicionamos um loop para continuar procurando
+                        try:
+                            food_img = pyautogui.locateOnScreen('fome.png', region=barra_tuple, confidence=0.6)
+                            if food_img is not None:
+                                time.sleep(0.1)
+                                pyautogui.write(['f8'])  # Use a função write para simular a tecla F4 sendo pressionada
+                                break  # Se a imagem for encontrada, saímos do loop
+                        except pyautogui.ImageNotFoundException:
                             break
             except pyautogui.ImageNotFoundException:
                 pass
@@ -543,6 +539,7 @@ def start():
     if opacity_on == False:
         messagebox.showwarning("Warning", "Please activate the screen opacity so that you can start the assistant.")
         return
+    root.iconify()
     global data
     global settings_saved
     # Verifique se as configurações foram salvas antes de iniciar o programa
@@ -559,7 +556,6 @@ def start():
     start_th.start()
     keyboard_th = threading.Thread(target=listener_keyboard)
     keyboard_th.start()
-
 
 def close_program():
     global opacity_on
@@ -582,7 +578,6 @@ def close_program():
             print("Tibia window not found.")
     root.destroy()
     disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
-
 
 root.protocol("WM_DELETE_WINDOW", close_program)
 
