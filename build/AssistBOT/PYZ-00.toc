@@ -1,4 +1,4 @@
-('c:\\Users\\familia menezes\\Desktop\\macro\\build\\AssistBOT\\PYZ-00.pyz',
+('C:\\Users\\familia menezes\\Desktop\\macro\\build\\AssistBOT\\PYZ-00.pyz',
  [('PIL',
    'C:\\Users\\familia '
    'menezes\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PIL\\__init__.py',
@@ -2164,7 +2164,7 @@
    'menezes\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\webbrowser.py',
    'PYMODULE'),
   ('window',
-   'c:\\Users\\familia menezes\\Desktop\\macro\\window.py',
+   'C:\\Users\\familia menezes\\Desktop\\macro\\window.py',
    'PYMODULE'),
   ('xml',
    'C:\\Users\\familia '
