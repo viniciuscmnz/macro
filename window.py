@@ -2,6 +2,7 @@ import ctypes
 import pygetwindow as gw
 import pyautogui
 import win32gui
+import sys
 
 GWL_EXSTYLE = -20
 WS_EX_LAYERED = 0x00080000
@@ -30,8 +31,8 @@ def hidden_client():
     try:
         target_window = [item for item in gw.getWindowsWithTitle(WINDOW_TITLE) if item.title == WINDOW_TITLE][0]
     except:
-        pyautogui.alert(title="Hidden Client Tibia", text='Janela do Tibia não localizada')
-        raise ValueError('Janela do Tibia não localizada')
+        sys.exit()
+
 
     target_hwnd = target_window._hWnd
 

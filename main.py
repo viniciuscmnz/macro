@@ -417,21 +417,8 @@ def main_program():
             try:
                 tibia_windows = gw.getWindowsWithTitle('Tibia')
                 if tibia_windows:
-                    try:
-                        tibia = tibia_windows[0]
-                        tibia.activate()
-                    except IndexError:
-                        print("Tibia window activation error.")
-                        close_program()
-                        pass
-                else:
-                    print("Tibia window not found.")
-                    global opacity_on
-                    if opacity_on:
-                        opacity_on = False
-                        opacity()
-                    close_program()
-                    break
+                    tibia = tibia_windows[0]
+                    tibia.activate()
 
                 for action, details in actions.items():
                     try:
@@ -443,7 +430,6 @@ def main_program():
                                     time.sleep(0.1)
                     except:
                         pass
-            
 
                 barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
                 if barra is not None:
@@ -524,13 +510,8 @@ def main_program():
                     disable_opacity()  # Desativa a opacidade
             except ValueError:
                 print("Tibia window not found.")
-                pass
-
-        try:
-            disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
-            root.destroy()
-        except:
-            pass
+        root.destroy()
+        disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
 
 
     root.protocol("WM_DELETE_WINDOW", close_program)

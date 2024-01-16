@@ -5,14 +5,21 @@ import psycopg2
 from datetime import datetime
 import bcrypt
 from window import *
+import os
+import sys 
 
 def check_credentials(event=None):
     ADMIN_PASSWORD = bcrypt.hashpw('123'.encode('utf-8'), bcrypt.gensalt())
 
     if email.get() == 'admin' and bcrypt.checkpw(password.get().encode('utf-8'), ADMIN_PASSWORD):
         messagebox.showinfo("Login info", "Bem-vindo, admin!")
-        root.destroy()  # Fecha a janela de login
+        if root:
+            try:
+                root.destroy()  # Fecha a janela de login
+            except:
+                pass
         main_program()  # Abre a janela do programa principal
+        sys.exit()  # Termina o script Python
     else:
         conn = psycopg2.connect(
             dbname="your_database_name",
@@ -63,6 +70,9 @@ login_button.pack(pady=(0,10))  # Adicionando um pouco de espaço vertical
 
 # Permitindo que o usuário pressione Enter para fazer login
 root.bind('<Return>', check_credentials)
+
+icon_path = os.path.join(os.getcwd(), "AssistBOT.ico")
+root.iconbitmap(icon_path)
 
 def center(win):
     win.update_idletasks()
