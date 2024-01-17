@@ -466,11 +466,11 @@ def main_program():
         settings_saved = False
 
     def start():
-        save()
         # Verifique a opacidade da janela antes de iniciar o programa
         if opacity_on == False:
             messagebox.showwarning("Warning", "Please activate the screen opacity so that you can start the assistant.")
             return
+        save()
         root.iconify()
         global data
         global settings_saved

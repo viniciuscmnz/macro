@@ -9,42 +9,46 @@ import os
 import sys 
 
 def check_credentials(event=None):
-    ADMIN_PASSWORD = bcrypt.hashpw('123'.encode('utf-8'), bcrypt.gensalt())
+    try:
+        if root.winfo_exists():
+            ADMIN_PASSWORD = bcrypt.hashpw('123'.encode('utf-8'), bcrypt.gensalt())
 
-    if email.get() == 'admin' and bcrypt.checkpw(password.get().encode('utf-8'), ADMIN_PASSWORD):
-        messagebox.showinfo("Login info", "Bem-vindo, admin!")
-        if root:
-            try:
-                root.destroy()  # Fecha a janela de login
-            except:
-                pass
-        main_program()  # Abre a janela do programa principal
-        sys.exit()  # Termina o script Python
-    else:
-        conn = psycopg2.connect(
-            dbname="your_database_name",
-            user="your_username",
-            password="your_password",
-            host="your_host",
-            port=5432
-        )
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE email=%s", (email.get(),))
-        row = c.fetchone()
-
-        if row is not None:
-            db_email, db_password, db_expiry_key = row
-            db_expiry_date = datetime.strptime(db_expiry_key, '%Y-%m-%d').date()
-            if bcrypt.checkpw(password.get().encode('utf-8'), db_password) and db_expiry_date > datetime.today().date():
-                days_left = (db_expiry_date - datetime.today().date()).days
-                messagebox.showinfo("Login info", "Bem-vindo, " + db_email + "! Você tem " + str(days_left) + " dias restantes.")
-                root.destroy()  # Fecha a janela de login
+            if email.get() == 'admin' and bcrypt.checkpw(password.get().encode('utf-8'), ADMIN_PASSWORD):
+                messagebox.showinfo("Login info", "Bem-vindo, admin!")
+                if root:
+                    try:
+                        root.destroy()  # Fecha a janela de login
+                    except:
+                        pass
                 main_program()  # Abre a janela do programa principal
+                sys.exit()  # Termina o script Python
             else:
-                messagebox.showerror("Login info", "Credenciais incorretas ou chave de expiração expirada")
-        else:
-            messagebox.showerror("Login info", "Usuário não encontrado")
-        conn.close()
+                conn = psycopg2.connect(
+                    dbname="your_database_name",
+                    user="your_username",
+                    password="your_password",
+                    host="your_host",
+                    port=5432
+                )
+                c = conn.cursor()
+                c.execute("SELECT * FROM users WHERE email=%s", (email.get(),))
+                row = c.fetchone()
+
+                if row is not None:
+                    db_email, db_password, db_expiry_key = row
+                    db_expiry_date = datetime.strptime(db_expiry_key, '%Y-%m-%d').date()
+                    if bcrypt.checkpw(password.get().encode('utf-8'), db_password) and db_expiry_date > datetime.today().date():
+                        days_left = (db_expiry_date - datetime.today().date()).days
+                        messagebox.showinfo("Login info", "Bem-vindo, " + db_email + "! Você tem " + str(days_left) + " dias restantes.")
+                        root.destroy()  # Fecha a janela de login
+                        main_program()  # Abre a janela do programa principal
+                    else:
+                        messagebox.showerror("Login info", "Credenciais incorretas ou chave de expiração expirada")
+                else:
+                    messagebox.showerror("Login info", "Usuário não encontrado")
+                conn.close()
+    except UnicodeDecodeError:
+        messagebox.showinfo("Erro", "Senha ou e-mail inválido!")
 
 root = tk.Tk()
 root.title("AssistBOT")  # Nome na barra superior
