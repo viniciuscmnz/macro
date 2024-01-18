@@ -13,6 +13,7 @@ import win32gui
 import pygetwindow as gw
 from tkinter import ttk
 import os
+import gc
 
 def main_program():
     root = ThemedTk(theme="Black", themebg=True)
@@ -25,7 +26,7 @@ def main_program():
     icon_path = os.path.join(os.getcwd(), "AssistBOT.ico")
     root.iconbitmap(icon_path)
 
-    global btn_load, btn_start, btn_skill2_position, btn_skill1_position, btn_ssa_position, btn_hp_position, btn_mana_position, lbl_might_ring, lbl_ssa, lbl_skill1, lbl_skill2, lbl_hp_heal, lbl_cast, lbl_healing, lbl_war_utilities, lbl_utilities, lbl_food, lbl_auto_hur, lbl_utamo, lbl_utura, var, settings_changed, settings_saved, loaded_filename, opacity_on, hp_rgb, rgb, ssa_rgb, skill1_rgb, skill2_rgb, might_ring_rgb, UTURA, HUR, hp_position, mana_position, skill1_position, skill2_position, ssa_position, might_ring_position
+    global btn_might_ring_position, btn_load, btn_start, btn_skill2_position, btn_skill1_position, btn_ssa_position, btn_hp_position, btn_mana_position, lbl_might_ring, lbl_ssa, lbl_skill1, lbl_skill2, lbl_hp_heal, lbl_cast, lbl_healing, lbl_war_utilities, lbl_utilities, lbl_food, lbl_auto_hur, lbl_utamo, lbl_utura, var, settings_changed, settings_saved, loaded_filename, opacity_on, hp_rgb, rgb, ssa_rgb, skill1_rgb, skill2_rgb, might_ring_rgb, UTURA, HUR, hp_position, mana_position, skill1_position, skill2_position, ssa_position, might_ring_position
     HOTKEYS = ["disabled", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11"]
     HUR = ["disabled", "utani hur", "utani gran hur", "utani tempo hur"]
     UTURA = ["disabled", "utura", "utura gran"]
@@ -401,7 +402,6 @@ def main_program():
             time.sleep(0.1)
         return False
 
-
     def run():
         actions = {
             'ssa': {'position': data['ssa_pos']['position'], 'rgb': data['ssa_pos']['rgb'], 'value': data['ssa']['value']},
@@ -413,40 +413,55 @@ def main_program():
         }
 
         while not myEvent.is_set():
-            try:
-                tibia_windows = gw.getWindowsWithTitle('Tibia')
-                if tibia_windows:
+            tibia_windows = gw.getWindowsWithTitle('Tibia')
+            if tibia_windows:
+                try:
                     tibia = tibia_windows[0]
                     tibia.activate()
+                except IndexError:
+                    print("Tibia window activation error.")
+                    close_program()
+                    break
+            else:
+                print("Tibia window not found.")
+                global opacity_on
+                if opacity_on:
+                    opacity_on = False
+                    opacity()
+                close_program()
+                break
 
-                for action, details in actions.items():
-                    try:
-                        if isinstance(details['position'], list):
-                            x, y = details['position']
-                            if not pyautogui.pixelMatchesColor(x, y, tuple(details['rgb'])):
-                                if details['value'] != 'disabled':
-                                    pyautogui.press(details['value'])
-                                    time.sleep(0.1)
-                    except:
-                        pass
+            for action, details in actions.items():
+                if isinstance(details['position'], list):
+                    x, y = details['position']
+                    if not pyautogui.pixelMatchesColor(x, y, tuple(details['rgb'])):
+                        if details['value'] != 'disabled':
+                            pyautogui.press(details['value'])
+                            time.sleep(0.1)
+        
 
-                barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
-                if barra is not None:
-                    barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))
+            barra = pyautogui.locateOnScreen('barra.png', confidence=0.8)
+            if barra is not None:
+                barra_tuple = (int(barra.left), int(barra.top), int(barra.width), int(barra.height))
 
-                    if auto_hur.get() == 1:
-                        check_image_disappear('haste', 'f9', region=barra_tuple)
+                if auto_hur.get() == 1:
+                    check_image_disappear('haste', 'f9', region=barra_tuple)
 
-                    if utamo.get() == 1:
-                        check_image_disappear('utamo', 'f11', region=barra_tuple)
+                if utamo.get() == 1:
+                    check_image_disappear('utamo', 'f11', region=barra_tuple)
 
-                    if food.get() == 1:
-                        check_image_appear('fome', 'f8', region=barra_tuple)
+                if food.get() == 1:
+                    check_image_appear('fome', 'f8', region=barra_tuple)
 
-                    if utura.get() == 1:
-                        check_image_disappear('utura', 'f10', region=barra_tuple)
-            except:
-                pass
+                if utura.get() == 1:
+                    check_image_disappear('utura', 'f10', region=barra_tuple)
+
+            gc.collect()
+            
+
+
+            
+
 
     def key_code(key):
         if key == pynput.keyboard.Key.f12:
@@ -465,11 +480,11 @@ def main_program():
         settings_saved = False
 
     def start():
+        save()
         # Verifique a opacidade da janela antes de iniciar o programa
         if opacity_on == False:
             messagebox.showwarning("Warning", "Please activate the screen opacity so that you can start the assistant.")
             return
-        save()
         root.iconify()
         global data
         global settings_saved
@@ -488,22 +503,16 @@ def main_program():
         keyboard_th = threading.Thread(target=listener_keyboard)
         keyboard_th.start()
 
-    opacity_on = False
-
     def close_program():
         global opacity_on
         if opacity_on:
-            if hidden_client() is None:
-                print("Não foi possível encontrar a janela do Tibia.")
-            else:
-                hidden_client()
+            hidden_client()
 
         tibia_windows = gw.getWindowsWithTitle('Tibia')
         if tibia_windows:
             if opacity_on:
                 opacity_on = False
                 disable_opacity()  # Desativa a opacidade
-                hidden_client()
         else:
             try:
                 if opacity_on:
@@ -515,7 +524,6 @@ def main_program():
                 print("Tibia window not found.")
         root.destroy()
         disable_opacity()  # Garante que a opacidade seja desativada quando o programa for fechado
-
 
     root.protocol("WM_DELETE_WINDOW", close_program)
 
