@@ -191,7 +191,6 @@ def main_program():
             while new_rgb != might_ring_rgb:
                 might_ring_rgb = new_rgb
                 messagebox.showinfo(title='Might Ring Result', message=f"X: {x} Y: {y} - RGB: {might_ring_rgb}")
-                btn_might_ring_position.configure(text=f"({x}, {y})")
                 might_ring_position = [x, y]
                 new_rgb = pyautogui.screenshot().getpixel((x, y))
 
@@ -494,13 +493,17 @@ def main_program():
     def close_program():
         global opacity_on
         if opacity_on:
-            hidden_client()
+            if hidden_client() is None:
+                print("Não foi possível encontrar a janela do Tibia.")
+            else:
+                hidden_client()
 
         tibia_windows = gw.getWindowsWithTitle('Tibia')
         if tibia_windows:
             if opacity_on:
                 opacity_on = False
                 disable_opacity()  # Desativa a opacidade
+                hidden_client()
         else:
             try:
                 if opacity_on:
