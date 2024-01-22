@@ -1,0 +1,8 @@
+assistbotcontato@gmail.com
+M165glg@123
+
+senha aws
+53491810
+
+INSERT INTO users (email, password, expiry_date) VALUES ('viniciuscassiomnz@gmail.com', 'M165glg@123', '2024/01/23');
+pyinstaller --noconsole --onefile --name=AssistBOT --icon=AssistBOT.ico start.py

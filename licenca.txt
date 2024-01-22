@@ -1,0 +1,29 @@
+Contrato de Licença de Usuário Final (EULA) do AssistBOT
+
+IMPORTANTE, LEIA COM ATENÇÃO:
+Este Contrato de Licença de Usuário Final ("EULA") é um acordo legal entre você (seja uma pessoa física ou jurídica) e o proprietário do AssistBOT, pelo software do produto AssistBOT, que inclui software de computador e pode incluir mídia associada, materiais impressos e documentação online ou eletrônica.
+
+AO INSTALAR, COPIAR OU DE OUTRA FORMA USAR O SOFTWARE DO AssistBOT, VOCÊ CONCORDA EM FICAR VINCULADO AOS TERMOS DESTE EULA. SE VOCÊ NÃO CONCORDAR COM OS TERMOS DESTE EULA, NÃO INSTALE OU USE O SOFTWARE DO AssistBOT.
+
+1. CONCESSÃO DE LICENÇA.
+Este EULA concede a você os seguintes direitos:
+- Instalação e Uso. Você pode instalar e usar uma cópia do AssistBOT em um único computador.
+- Chave de Licença. Uma chave de licença válida é necessária para usar o AssistBOT. A chave de licença é válida por 30 dias e pode ser adquirida diretamente com o proprietário do AssistBOT.
+
+2. DESCRIÇÃO DE OUTROS DIREITOS E LIMITAÇÕES.
+- Limitações no Uso Inverso, Descompilação e Desmontagem. Você não pode reverter a engenharia, descompilar ou desmontar o AssistBOT, exceto e apenas na medida em que tal atividade seja expressamente permitida pela lei aplicável, não obstante esta limitação.
+- Suporte Técnico. Pode ser fornecido suporte técnico relacionado ao AssistBOT ("Suporte Técnico"). Qualquer software suplementar fornecido a você como parte do Suporte Técnico será considerado parte do AssistBOT e sujeito aos termos e condições deste EULA.
+
+3. RESCISÃO.
+Sem prejuízo de quaisquer outros direitos, o proprietário do AssistBOT pode rescindir este EULA se você não cumprir os termos e condições deste EULA. Nesse caso, você deve destruir todas as cópias do AssistBOT e todas as suas partes componentes.
+
+4. DIREITOS AUTORAIS.
+Todos os títulos e direitos autorais no AssistBOT (incluindo, mas não se limitando a quaisquer imagens, fotografias, animações, vídeo, áudio, música, texto e "applets" incorporados ao AssistBOT), a documentação acompanhante e quaisquer cópias do AssistBOT são de propriedade do proprietário do AssistBOT. O AssistBOT é protegido por leis de direitos autorais e tratados internacionais de direitos autorais, bem como outras leis e tratados de propriedade intelectual. Portanto, você deve tratar o AssistBOT como qualquer outro material protegido por direitos autorais.
+
+5. GARANTIAS.
+O AssistBOT é fornecido "como está" sem garantia de qualquer tipo, seja expressa ou implícita, incluindo, mas não se limitando a garantias implícitas de comercialização ou adequação a um propósito específico.
+
+6. LIMITAÇÃO DE RESPONSABILIDADE.
+Em nenhum caso o proprietário do AssistBOT será responsável por quaisquer danos (incluindo, sem limitação, danos por perda de lucros comerciais, interrupção de negócios, perda de informações comerciais ou outras perdas pecuniárias) decorrentes do uso ou da incapacidade de usar o AssistBOT, mesmo que o proprietário do AssistBOT tenha sido avisado da possibilidade de tais danos.
+
+Ao clicar em "Aceito", você concorda com os termos deste contrato que entrarão em vigor imediatamente.

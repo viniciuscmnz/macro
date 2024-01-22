@@ -4,7 +4,7 @@ from main import main_program
 import psycopg2
 from datetime import datetime
 import os
-
+import uuid
 
 def check_credentials(event=None):
     if not email.get() or not password.get():
@@ -25,10 +25,16 @@ def check_credentials(event=None):
 
         if row is not None:
             print("Usuário recuperado do banco de dados!")
-            db_email, db_password, db_expiry_key = row
+            db_email, db_password, db_expiry_key, db_session_token = row
             db_expiry_date = db_expiry_key
             if password.get() == db_password and db_expiry_date > datetime.today().date():
+                if db_session_token is not None:
+                    messagebox.showerror("Erro", "Usuário já está logado.")
+                    return False
                 days_left = (db_expiry_date - datetime.today().date()).days
+                session_token = str(uuid.uuid4())  # Gere um token de sessão único
+                c.execute("UPDATE users SET session_token=%s WHERE email=%s", (session_token, email.get(),))  # Armazene o token no banco de dados
+                conn.commit()
                 if root is not None:
                     messagebox.showinfo("Login info", "Bem-vindo, " + db_email + "! Você tem " + str(days_left) + " dias restantes.")
                 root.destroy()
@@ -45,6 +51,7 @@ def check_credentials(event=None):
         if email.get() and password.get() and root is not None:
             messagebox.showerror("Erro", "Senha ou e-mail inválido!")
     return True
+
 
 root = tk.Tk()
 root.title("AssistBOT")  # Nome na barra superior
