@@ -5,6 +5,7 @@ import psycopg2
 from datetime import datetime
 import os
 import uuid
+import webbrowser
 
 def check_credentials(event=None):
     if not email.get() or not password.get():
@@ -38,7 +39,7 @@ def check_credentials(event=None):
                 if root is not None:
                     messagebox.showinfo("Login info", "Bem-vindo, " + db_email + "! Você tem " + str(days_left) + " dias restantes.")
                 root.destroy()
-                main_program()
+                main_program(session_token, email.get())  # Passe o token de sessão e o email como 
             else:
                 if root is not None:
                     messagebox.showerror("Login info", "Credenciais incorretas ou chave de expiração expirada")
@@ -75,6 +76,30 @@ password_entry.pack(pady=(0,10))  # Adicionando um pouco de espaço vertical
 
 login_button = ttk.Button(frame, text="Login", command=check_credentials)
 login_button.pack(pady=(0,10))  # Adicionando um pouco de espaço vertical
+
+# Aumente o tamanho da fonte do rótulo e da caixa de entrada do e-mail
+email_label.config(font=("TkDefaultFont", 12))
+email_entry.config(font=("TkDefaultFont", 12))
+
+# Aumente o tamanho da fonte do rótulo e da caixa de entrada da senha
+password_label.config(font=("TkDefaultFont", 12))
+password_entry.config(font=("TkDefaultFont", 12))
+
+# Adicione esta linha para criar uma linha separadora
+ttk.Separator(frame, orient='horizontal').pack(fill='x', pady=(20,20))
+
+# Adicione estas linhas para criar o rótulo com o texto
+info_label = tk.Label(frame, text="Verifique atualizações em nosso site:")
+info_label.pack()
+
+def callback(url):
+    webbrowser.open_new(url)
+
+link1 = tk.Label(frame, text="www.assistbot.com", fg="blue", cursor="hand2")
+link1.pack()
+link1.bind("<Button-1>", lambda e: callback("http://www.assistbot.com"))
+
+
 
 # Permitindo que o usuário pressione Enter para fazer login
 root.bind('<Return>', check_credentials)
